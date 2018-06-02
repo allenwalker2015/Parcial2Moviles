@@ -1,8 +1,10 @@
-package com.alphadev.gamesnews;
+package com.alphadev.gamesnews.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.util.SortedList;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,8 +15,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.alphadev.gamesnews.R;
+import com.alphadev.gamesnews.api.GamesNewsAPIService;
+import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
+import com.alphadev.gamesnews.model.Token;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    GamesNewsAPIService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +35,15 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        service = GamesNewsAPIUtils.getAPIService();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                logIn("00053812","00053812");
+
             }
         });
 
@@ -97,5 +112,27 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    public void logIn(String title, String body) {
+        service.logIn(title, body).enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+                if (response.isSuccessful()) {
+                    showResponse(response.body().getToken());
+                    Log.i("MAIN", "login submitted to API." + response.body().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+                Log.e("MAIN", "Unable to submit login to API.");
+            }
+        });
+    }
+
+    public void showResponse(String response) {
+        Log.d("MAIN_RESPONSE", "showResponse: " + response);
     }
 }
