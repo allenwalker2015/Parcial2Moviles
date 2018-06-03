@@ -1,5 +1,6 @@
 package com.alphadev.gamesnews.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
@@ -9,13 +10,16 @@ public class Usuario {
 
     @SerializedName("favoriteNews")
     @Expose
-    private List<FavoriteNews> favoriteNews = null;
+    private List<News> News = new ArrayList<>();
     @SerializedName("_id")
     @Expose
     private String id;
     @SerializedName("user")
     @Expose
     private String user;
+    @SerializedName("avatar")
+    @Expose
+    private String avatar;
     @SerializedName("password")
     @Expose
     private String password;
@@ -26,12 +30,12 @@ public class Usuario {
     @Expose
     private Integer v;
 
-    public List<FavoriteNews> getFavoriteNews() {
-        return favoriteNews;
+    public List<News> getNews() {
+        return News;
     }
 
-    public void setFavoriteNews(List<FavoriteNews> favoriteNews) {
-        this.favoriteNews = favoriteNews;
+    public void setNews(List<News> News) {
+        this.News = News;
     }
 
     public String getId() {
@@ -48,6 +52,14 @@ public class Usuario {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getPassword() {

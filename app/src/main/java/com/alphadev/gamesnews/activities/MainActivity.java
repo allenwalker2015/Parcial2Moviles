@@ -19,7 +19,12 @@ import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.model.Token;
+import com.alphadev.gamesnews.model.Usuario;
 
+import java.util.List;
+
+import io.reactivex.functions.Consumer;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -122,6 +127,7 @@ public class MainActivity extends AppCompatActivity
                 if (response.isSuccessful()) {
                     showResponse(response.body().getToken());
                     Log.i("MAIN", "login submitted to API." + response.body().toString());
+                    getUsers(response.body());
                 }
             }
 
@@ -130,6 +136,38 @@ public class MainActivity extends AppCompatActivity
                 Log.e("MAIN", "Unable to submit login to API.");
             }
         });
+    }
+
+    public void getUsers(Token token){
+//        service.getUsuarios(token.getToken()).enqueue(new Callback<List<Usuario>>() {
+//            @Override
+//            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+//                showResponse(response.toString());
+//                showResponse(call.request().toString());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Usuario>> call, Throwable t) {
+//                showResponse(call.request().toString());
+//                showResponse(call.request().headers().toString());
+//                showResponse(t.getMessage());
+//            }
+//        });
+        service.getUsuarios2(token.getToken()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                showResponse(response.body().source().toString());
+                showResponse(call.request().toString());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                showResponse(call.request().toString());
+                showResponse(call.request().headers().toString());
+                showResponse(t.getMessage());
+            }
+        });
+
     }
 
     public void showResponse(String response) {

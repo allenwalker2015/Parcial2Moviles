@@ -2,7 +2,7 @@ package com.alphadev.gamesnews.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class FavoriteNews {
+public class News {
 
     @SerializedName("_id")
     @Expose
@@ -16,6 +16,12 @@ public class FavoriteNews {
     @SerializedName("game")
     @Expose
     private String game;
+    @SerializedName("coverImage")
+    @Expose
+    private String coverImage;
+    @SerializedName("description")
+    @Expose
+    private String description;
     @SerializedName("created_date")
     @Expose
     private String createdDate;
@@ -53,6 +59,22 @@ public class FavoriteNews {
 
     public void setGame(String game) {
         this.game = game;
+    }
+
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getCreatedDate() {
