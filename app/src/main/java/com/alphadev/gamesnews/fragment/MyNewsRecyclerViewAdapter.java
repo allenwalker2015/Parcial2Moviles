@@ -10,16 +10,11 @@ import android.widget.TextView;
 
 import com.alphadev.gamesnews.api.pojo.New;
 import com.alphadev.gamesnews.fragment.NewsFragment.OnListFragmentInteractionListener;
-import com.alphadev.gamesnews.fragment.dummy.DummyContent.DummyItem;
 import com.alphadev.gamesnews.R;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+
 public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder> {
 
     private final List<New> list;
@@ -40,8 +35,10 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.title.setText(list.get(position).getTitle());
-        holder.content.setText(list.get(position).getDescription());
+        if(list!=null) {
+            holder.title.setText(list.get(position).getTitle());
+            holder.content.setText(list.get(position).getDescription());
+        }
        // holder.image.setImageURI(Uri.parse(list.get(position).getCoverImage()));
 
 
@@ -59,7 +56,10 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if(list!=null) {
+            return list.size();
+        }
+        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -73,5 +73,11 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             title = (TextView) view.findViewById(R.id.title);
             content = (TextView) view.findViewById(R.id.content);
         }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(position==0) return 1;
+        else return 0;
     }
 }

@@ -1,9 +1,12 @@
 package com.alphadev.gamesnews.api;
 
+import com.alphadev.gamesnews.api.pojo.MessageResult;
 import com.alphadev.gamesnews.api.pojo.New;
+import com.alphadev.gamesnews.api.pojo.NewNew;
 import com.alphadev.gamesnews.api.pojo.Player;
 import com.alphadev.gamesnews.api.pojo.Token;
 import com.alphadev.gamesnews.api.pojo.User;
+import com.alphadev.gamesnews.api.pojo.UserWithFavs;
 
 
 import java.util.List;
@@ -46,22 +49,28 @@ public interface GamesNewsAPIService {
     //OBTENER UN USUARIO POR SU ID
     @GET("/users/{id}")
     @FormUrlEncoded
-    Call<User> getUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
+    Call<UserWithFavs> getUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
 
     //BORRAR USUARIO POR SU ID
     @DELETE("/users/{id}")
     @FormUrlEncoded
     Call<User> deleteUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
 
+    @GET("users/detail")
+    Call<UserWithFavs> getUserDetail(@Header("Authorization") String authHeader);
+
     //AGREGAR NOTICIA FAVORITA A UN USUARIO
     @POST("/users/{id}/fav")
     @FormUrlEncoded
-    Call<User> addUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
+    //TODO: DEVUELVE ALGO DIFERENTE A LO QUE HE COLOCADO
+    Call<NewNew> addUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
+
 
     //BORRAR UNA NOTICIA FAVORITA A UN USUARIO
     @DELETE("/users/{id}/fav")
     @FormUrlEncoded
-    Call<User> deleteUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
+    //TODO: DEVUELVE ALGO DIFERENTE A LO QUE HE COLOCADO
+    Call<MessageResult> deleteUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
 
     //******** ADMINISTRACION DE NOTICIAS ********//
 

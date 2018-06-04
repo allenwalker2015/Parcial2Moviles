@@ -12,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadev.gamesnews.R;
-import com.alphadev.gamesnews.fragment.dummy.DummyContent;
-import com.alphadev.gamesnews.fragment.dummy.DummyContent.DummyItem;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
 /**
@@ -65,12 +63,25 @@ public class NewsFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
+            final MyNewsRecyclerViewAdapter mAdapter = new MyNewsRecyclerViewAdapter(gamesNewsViewModel.getAllNews(token), mListener);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+                GridLayoutManager mLayoutManager = new GridLayoutManager(context, mColumnCount);
+                mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        switch(mAdapter.getItemViewType(position)){
+                            case 1:
+                                return 2;
+                            default:
+                                return 1;
+                        }
+                    }
+                });
+                recyclerView.setLayoutManager(mLayoutManager);
             }
-            recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(gamesNewsViewModel.getAllNews(token), mListener));
+            recyclerView.setAdapter(mAdapter);
         }
         return view;
     }
@@ -105,6 +116,6 @@ public class NewsFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+       // void onListFragmentInteraction(DummyItem item);
     }
 }

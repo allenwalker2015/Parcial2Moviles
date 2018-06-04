@@ -100,17 +100,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_news) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_games) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_fav) {
 
         }
 
@@ -125,12 +121,18 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful()) {
-                    showResponse(response.body().getToken());
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container,new NewsFragment().newInstance(2,response.body().getToken()));
-                    transaction.commit();
-                    Log.i("MAIN", "login submitted to API." + response.body().toString());
-                    getUsers(response.body());
+                    String token = response.body().getToken();
+                    showResponse(token);
+                    if(token!=null) {
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, new NewsFragment().newInstance(2, response.body().getToken()));
+                        transaction.commit();
+                        Log.i("MAIN", "login submitted to API." + response.body().toString());
+                        getUsers(response.body());
+                    }
+                    else{
+                        showResponse("LAS CREDENCIALES SON INVALDIDAS BITCH");
+                    }
                 }
             }
 
@@ -142,12 +144,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getUsers(Token token){
-        service.getAllUsers(token.getToken()).enqueue(new Callback<List<User>>() {
+        service.getAllUsers(token.getProcessedToken()).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     showResponse(response.body().get(0).toString());
-
                 }
             }
 
@@ -158,21 +159,6 @@ public class MainActivity extends AppCompatActivity
                 showResponse(t.getMessage());
             }
         });
-//        service.getUsuarios2(token.getToken()).enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                showResponse(response.body().source().toString());
-//                showResponse(call.request().toString());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                showResponse(call.request().toString());
-//                showResponse(call.request().headers().toString());
-//                showResponse(t.getMessage());
-//            }
-//        });
-
     }
 
     public void showResponse(String response) {
