@@ -6,11 +6,11 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Usuario {
+public class User {
 
     @SerializedName("favoriteNews")
     @Expose
-    private List<News> News = new ArrayList<>();
+    private List<String> News = null;
     @SerializedName("_id")
     @Expose
     private String id;
@@ -30,11 +30,11 @@ public class Usuario {
     @Expose
     private Integer v;
 
-    public List<News> getNews() {
+    public List<String> getNews() {
         return News;
     }
 
-    public void setNews(List<News> News) {
+    public void setNews(List<String> News) {
         this.News = News;
     }
 
@@ -84,6 +84,11 @@ public class Usuario {
 
     public void setV(Integer v) {
         this.v = v;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().append("\nfavoriteNews:"+ News).append("\n").append("id:"+ id).append("\n").append("user:"+ user).append("\n").append("avatar:"+ avatar).append("\n").append("password:"+ password).append("\n").append("createdDate:"+ createdDate).append("\n").append("v:"+ v).append("\n").toString();
     }
 
 }

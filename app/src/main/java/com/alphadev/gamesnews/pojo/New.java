@@ -1,8 +1,8 @@
-package com.alphadev.gamesnews.model;
+package com.alphadev.gamesnews.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class News {
+public class New {
 
     @SerializedName("_id")
     @Expose

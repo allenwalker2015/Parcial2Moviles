@@ -1,4 +1,4 @@
-package com.alphadev.gamesnews.Fragment;
+package com.alphadev.gamesnews.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadev.gamesnews.R;
-import com.alphadev.gamesnews.Fragment.dummy.DummyContent;
-import com.alphadev.gamesnews.Fragment.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import com.alphadev.gamesnews.fragment.dummy.DummyContent;
+import com.alphadev.gamesnews.fragment.dummy.DummyContent.DummyItem;
 
 /**
  * A fragment representing a list of Items.

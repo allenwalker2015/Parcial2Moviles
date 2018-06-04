@@ -1,32 +1,95 @@
 package com.alphadev.gamesnews.api;
 
-import com.alphadev.gamesnews.model.Token;
-import com.alphadev.gamesnews.model.Usuario;
+import com.alphadev.gamesnews.pojo.New;
+import com.alphadev.gamesnews.pojo.Token;
+import com.alphadev.gamesnews.pojo.User;
 
 
 import java.util.List;
 
-import io.reactivex.Single;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface GamesNewsAPIService {
 
-        @POST("/login")
-        @FormUrlEncoded
-        Call<Token> logIn(@Field("user") String user,
-                             @Field("password") String password );
+    //******** ADMINISTRACION DE USUARIOS ********//
 
-        @GET("/users")
-        Call<List<Usuario>> getUsuarios(@Header("Authorization") String authHeader);
+    //LOGIN
+    @POST("/login")
+    @FormUrlEncoded
+    Call<Token> logIn(@Field("user") String user,
+                      @Field("password") String password);
 
-        @GET("/users")
-        Call<ResponseBody> getUsuarios2(@Header("Authorization") String authHeader);
+    //OBTENER TODOS LOS USUARIOS
+    @GET("/users")
+    Call<List<User>> getAllUsers(@Header("Authorization") String authHeader);
+
+    //AGREGAR UN USUARIO
+    @POST("/users")
+    @FormUrlEncoded
+    Call<User> addUser(@Header("Authorization") String authHeader, @Field("user") String user,
+                       @Field("avatar") String avatar, @Field("password") String password);
+
+    //ACTUALIZAR LA CONTRASEÑA DE UN USUARIO
+    @PUT("/users/{id}")
+    @FormUrlEncoded
+    Call<User> editUser(@Header("Authorization") String authHeader, @Path("id") String id, @Field("password") String password);
+
+    //OBTENER UN USUARIO POR SU ID
+    @GET("/users/{id}")
+    @FormUrlEncoded
+    Call<User> getUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
+
+    //BORRAR USUARIO POR SU ID
+    @DELETE("/users/{id}")
+    @FormUrlEncoded
+    Call<User> deleteUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
+
+    //AGREGAR NOTICIA FAVORITA A UN USUARIO
+    @POST("/users/{id}/fav")
+    @FormUrlEncoded
+    Call<User> addUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
+
+    //BORRAR UNA NOTICIA FAVORITA A UN USUARIO
+    @DELETE("/users/{id}/fav")
+    @FormUrlEncoded
+    Call<User> deleteUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
+
+    //******** ADMINISTRACION DE NOTICIAS ********//
+
+    //OBTENER TODAS LAS NOTICIAS
+    @GET("/news")
+    Call<List<New>> getAllNews(@Header("Authorization") String authHeader);
+
+    //OBTENER TIPOS DE NOTICIAS
+    @GET("/news/type/list")
+    Call<List<String>> getNewsCategory(@Header("Authorization") String authHeader);
+
+    //OBTENER NOTICIAS DE UN TIPO
+    @GET("/news/type/{category}")
+    Call<List<New>> getNewsByCategory(@Header("Authorization") String authHeader,@Path("category") String category);
+
+    //AGREGAR NUEVA NOTICIA
+    @POST("/news")
+    @FormUrlEncoded
+    Call<New> addNew(@Header("Authorization") String authHeader,@Path("title") String title,@Path("description")
+            String description,@Path("coverImage") String coverImage,@Path("body") String body,@Path("game") String category);
+
+    //OBTENER NOTICIA POR ID
+    @GET("/news/{id}")
+    Call<New> getNewByID(@Header("Authorization") String authHeader,@Path("id") String id);
+
+    //******** ADMINISTRACION DE PLAYERS ********//
+
+
+
 
 
 }

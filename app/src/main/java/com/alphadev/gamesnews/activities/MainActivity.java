@@ -3,7 +3,6 @@ package com.alphadev.gamesnews.activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.util.SortedList;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,13 +17,11 @@ import android.view.MenuItem;
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
-import com.alphadev.gamesnews.model.Token;
-import com.alphadev.gamesnews.model.Usuario;
+import com.alphadev.gamesnews.pojo.Token;
+import com.alphadev.gamesnews.pojo.User;
 
 import java.util.List;
 
-import io.reactivex.functions.Consumer;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -139,34 +136,35 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getUsers(Token token){
-//        service.getUsuarios(token.getToken()).enqueue(new Callback<List<Usuario>>() {
-//            @Override
-//            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
-//                showResponse(response.toString());
-//                showResponse(call.request().toString());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Usuario>> call, Throwable t) {
-//                showResponse(call.request().toString());
-//                showResponse(call.request().headers().toString());
-//                showResponse(t.getMessage());
-//            }
-//        });
-        service.getUsuarios2(token.getToken()).enqueue(new Callback<ResponseBody>() {
+        service.getAllUsers(token.getToken()).enqueue(new Callback<List<User>>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                showResponse(response.body().source().toString());
-                showResponse(call.request().toString());
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.isSuccessful()) {
+                    showResponse(response.body().get(0).toString());
+                }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<List<User>> call, Throwable t) {
                 showResponse(call.request().toString());
                 showResponse(call.request().headers().toString());
                 showResponse(t.getMessage());
             }
         });
+//        service.getUsuarios2(token.getToken()).enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                showResponse(response.body().source().toString());
+//                showResponse(call.request().toString());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                showResponse(call.request().toString());
+//                showResponse(call.request().headers().toString());
+//                showResponse(t.getMessage());
+//            }
+//        });
 
     }
 

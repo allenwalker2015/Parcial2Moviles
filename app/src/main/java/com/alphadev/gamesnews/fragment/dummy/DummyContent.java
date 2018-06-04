@@ -1,4 +1,4 @@
-package com.alphadev.gamesnews.Fragment.dummy;
+package com.alphadev.gamesnews.fragment.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

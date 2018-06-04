@@ -1,4 +1,4 @@
-package com.alphadev.gamesnews.Fragment;
+package com.alphadev.gamesnews.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.alphadev.gamesnews.Fragment.NewsFragment.OnListFragmentInteractionListener;
-import com.alphadev.gamesnews.Fragment.dummy.DummyContent.DummyItem;
+import com.alphadev.gamesnews.fragment.NewsFragment.OnListFragmentInteractionListener;
+import com.alphadev.gamesnews.fragment.dummy.DummyContent.DummyItem;
 import com.alphadev.gamesnews.R;
 
 import java.util.List;
