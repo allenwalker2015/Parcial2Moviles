@@ -1,6 +1,5 @@
-package com.alphadev.gamesnews.model;
+package com.alphadev.gamesnews.api.pojo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;

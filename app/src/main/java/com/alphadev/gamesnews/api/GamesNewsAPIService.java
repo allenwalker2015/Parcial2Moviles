@@ -1,8 +1,9 @@
 package com.alphadev.gamesnews.api;
 
-import com.alphadev.gamesnews.pojo.New;
-import com.alphadev.gamesnews.pojo.Token;
-import com.alphadev.gamesnews.pojo.User;
+import com.alphadev.gamesnews.api.pojo.New;
+import com.alphadev.gamesnews.api.pojo.Player;
+import com.alphadev.gamesnews.api.pojo.Token;
+import com.alphadev.gamesnews.api.pojo.User;
 
 
 import java.util.List;
@@ -31,7 +32,7 @@ public interface GamesNewsAPIService {
     @GET("/users")
     Call<List<User>> getAllUsers(@Header("Authorization") String authHeader);
 
-    //AGREGAR UN USUARIO
+    //AGREGAR NUEVO USUARIO
     @POST("/users")
     @FormUrlEncoded
     Call<User> addUser(@Header("Authorization") String authHeader, @Field("user") String user,
@@ -88,9 +89,22 @@ public interface GamesNewsAPIService {
 
     //******** ADMINISTRACION DE PLAYERS ********//
 
+    //OBTENER TODOS LOS PLAYERS
+    @GET("/players")
+    Call<List<Player>> getAllPlayers(@Header("Authorization") String authHeader);
 
+    //OBTENER LISTA DE JUEGOS DE LOS PLAYERS
+    @GET("/players/type/list")
+    Call<List<String>> getPlayersCategory(@Header("Authorization") String authHeader);
 
+    //AGREGAR NUEVO PLAYER
+    @GET("/players")
+    @FormUrlEncoded
+    Call<List<String>> getPlayersByCategory(@Header("Authorization") String authHeader,@Field("name") String name,@Field("biografia") String biografia, @Field("avatar") String avatar,@Field("game") String category);
 
+    //OBTENER JUGADOR POR ID
+    @GET("/players/{id}")
+    Call<Player> getPlayerByID(@Header("Authorization") String authHeader,@Path("id") String id);
 
 }
 

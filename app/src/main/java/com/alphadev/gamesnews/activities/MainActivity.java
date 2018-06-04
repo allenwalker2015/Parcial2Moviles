@@ -17,8 +17,8 @@ import android.view.MenuItem;
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
-import com.alphadev.gamesnews.pojo.Token;
-import com.alphadev.gamesnews.pojo.User;
+import com.alphadev.gamesnews.api.pojo.Token;
+import com.alphadev.gamesnews.api.pojo.User;
 
 import java.util.List;
 

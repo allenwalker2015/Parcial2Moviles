@@ -1,4 +1,4 @@
-package com.alphadev.gamesnews.pojo;
+package com.alphadev.gamesnews.api.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
