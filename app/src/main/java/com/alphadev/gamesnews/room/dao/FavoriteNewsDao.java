@@ -20,7 +20,7 @@ public interface FavoriteNewsDao {
     void deleteAll();
 
     @Query("SELECT * from favorite_news WHERE id=:id")
-    User getFavoriteByID(String id);
+    FavoriteNews getFavoriteByID(String id);
 
     @Query("SELECT * FROM new INNER JOIN favorite_news ON new._id=favorite_news.id WHERE favorite_news.idusuario=:id")
     List<New> getFavoriteNews(int id);

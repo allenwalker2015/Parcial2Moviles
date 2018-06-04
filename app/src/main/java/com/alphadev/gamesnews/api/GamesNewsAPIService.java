@@ -75,17 +75,17 @@ public interface GamesNewsAPIService {
 
     //OBTENER NOTICIAS DE UN TIPO
     @GET("/news/type/{category}")
-    Call<List<New>> getNewsByCategory(@Header("Authorization") String authHeader,@Path("category") String category);
+    Call<List<New>> getNewsByCategory(@Header("Authorization") String authHeader, @Path("category") String category);
 
     //AGREGAR NUEVA NOTICIA
     @POST("/news")
     @FormUrlEncoded
-    Call<New> addNew(@Header("Authorization") String authHeader,@Path("title") String title,@Path("description")
-            String description,@Path("coverImage") String coverImage,@Path("body") String body,@Path("game") String category);
+    Call<New> addNew(@Header("Authorization") String authHeader, @Path("title") String title, @Path("description")
+            String description, @Path("coverImage") String coverImage, @Path("body") String body, @Path("game") String category);
 
     //OBTENER NOTICIA POR ID
     @GET("/news/{id}")
-    Call<New> getNewByID(@Header("Authorization") String authHeader,@Path("id") String id);
+    Call<New> getNewByID(@Header("Authorization") String authHeader, @Path("id") String id);
 
     //******** ADMINISTRACION DE PLAYERS ********//
 

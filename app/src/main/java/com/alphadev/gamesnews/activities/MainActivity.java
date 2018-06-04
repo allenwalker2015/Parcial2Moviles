@@ -3,6 +3,7 @@ package com.alphadev.gamesnews.activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,6 +20,7 @@ import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.api.pojo.Token;
 import com.alphadev.gamesnews.api.pojo.User;
+import com.alphadev.gamesnews.fragment.NewsFragment;
 
 import java.util.List;
 
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -123,6 +126,9 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful()) {
                     showResponse(response.body().getToken());
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container,new NewsFragment().newInstance(2,response.body().getToken()));
+                    transaction.commit();
                     Log.i("MAIN", "login submitted to API." + response.body().toString());
                     getUsers(response.body());
                 }
@@ -141,6 +147,7 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     showResponse(response.body().get(0).toString());
+
                 }
             }
 

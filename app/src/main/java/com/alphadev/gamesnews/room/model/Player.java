@@ -2,6 +2,8 @@ package com.alphadev.gamesnews.room.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -10,20 +12,19 @@ import com.google.gson.annotations.SerializedName;
 public class Player {
 
         @ColumnInfo(name ="avatar")
-       
         private String avatar;
-
+        @PrimaryKey
+        @NonNull
         @ColumnInfo(name ="_id")
-       
         private String id;
+
         @ColumnInfo(name ="name")
-       
         private String name;
+
         @ColumnInfo(name ="biografia")
-       
         private String biografia;
+
         @ColumnInfo(name ="game")
-       
         private String game;
 //        @ColumnInfo(name ="__v")
 //

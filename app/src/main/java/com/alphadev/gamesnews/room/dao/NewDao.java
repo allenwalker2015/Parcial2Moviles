@@ -5,7 +5,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import com.alphadev.gamesnews.room.model.New;
-import com.alphadev.gamesnews.room.model.User;
+
 
 @Dao
 public interface NewDao {

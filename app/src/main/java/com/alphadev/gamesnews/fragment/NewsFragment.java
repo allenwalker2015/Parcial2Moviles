@@ -1,5 +1,6 @@
 package com.alphadev.gamesnews.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.fragment.dummy.DummyContent;
 import com.alphadev.gamesnews.fragment.dummy.DummyContent.DummyItem;
+import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
 /**
  * A fragment representing a list of Items.
@@ -22,25 +24,24 @@ import com.alphadev.gamesnews.fragment.dummy.DummyContent.DummyItem;
  */
 public class NewsFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
+
+    private static final String ARG_COLUMN_COUNT = "column-count", TOKEN = "token";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private GamesNewsViewModel gamesNewsViewModel;
+    private String token;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
+
     public NewsFragment() {
     }
 
-    // TODO: Customize parameter initialization
+
     @SuppressWarnings("unused")
-    public static NewsFragment newInstance(int columnCount) {
+    public static NewsFragment newInstance(int columnCount,String token) {
         NewsFragment fragment = new NewsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putString(TOKEN, token);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,6 +52,7 @@ public class NewsFragment extends Fragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            token = getArguments().getString(TOKEN);
         }
     }
 
@@ -58,7 +60,7 @@ public class NewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-
+        gamesNewsViewModel =  ViewModelProviders.of(this).get(GamesNewsViewModel.class);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -68,7 +70,7 @@ public class NewsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(gamesNewsViewModel.getAllNews(token), mListener));
         }
         return view;
     }
@@ -77,12 +79,12 @@ public class NewsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
+//        if (context instanceof OnListFragmentInteractionListener) {
+//            mListener = (OnListFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnListFragmentInteractionListener");
+//        }
     }
 
     @Override

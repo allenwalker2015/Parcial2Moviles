@@ -4,27 +4,25 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 @Entity(tableName = "new")
 public class New {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name ="_id")
     private String id;
+
     @ColumnInfo(name ="title")
     private String title;
+
     @ColumnInfo(name ="body")
-    
     private String body;
+
     @ColumnInfo(name ="game")
-    
     private String game;
+
     @ColumnInfo(name ="coverImage")
-    
     private String coverImage;
     @ColumnInfo(name ="description")
-    
     private String description;
 //    @ColumnInfo(name ="created_date")
 //
@@ -33,6 +31,9 @@ public class New {
 //
 //    private Integer v;
 
+    public New(){
+
+    }
 
     public New(@NonNull String id, String title, String body, String game, String coverImage, String description) {
         this.id = id;

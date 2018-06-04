@@ -4,7 +4,10 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
 
+import com.alphadev.gamesnews.api.pojo.New;
 import com.alphadev.gamesnews.repo.GamesNewsRepository;
+
+import java.util.List;
 
 public class GamesNewsViewModel extends AndroidViewModel {
     private final GamesNewsRepository mRepository;
@@ -14,5 +17,9 @@ public class GamesNewsViewModel extends AndroidViewModel {
             mRepository = new GamesNewsRepository(application);
             //mAllWords = mRepository.getAllWords();
 
+    }
+
+    public List<New>getAllNews(String token){
+       return mRepository.getAllNews(token);
     }
 }
