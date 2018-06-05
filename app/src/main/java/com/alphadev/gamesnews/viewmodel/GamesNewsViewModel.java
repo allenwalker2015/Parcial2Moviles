@@ -16,13 +16,7 @@ public class GamesNewsViewModel extends AndroidViewModel {
     public GamesNewsViewModel(@NonNull Application application) {
             super(application);
             mRepository = new GamesNewsRepository(application);
-            //mAllWords = mRepository.getAllWords();
-
     }
-
-//    public List<New>getAllNews(String token){
-//       return mRepository.getAllNews(token);
-//    }
 
     public LiveData<List<com.alphadev.gamesnews.room.model.New>> getAllNews(){
         return mRepository.getAllNews();
