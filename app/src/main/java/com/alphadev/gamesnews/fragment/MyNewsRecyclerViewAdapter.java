@@ -1,6 +1,6 @@
 package com.alphadev.gamesnews.fragment;
 
-import android.net.Uri;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.alphadev.gamesnews.api.pojo.New;
 import com.alphadev.gamesnews.fragment.NewsFragment.OnListFragmentInteractionListener;
 import com.alphadev.gamesnews.R;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -19,10 +21,12 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 
     private final List<New> list;
     private final OnListFragmentInteractionListener mListener;
+    private Context context;
 
-    public MyNewsRecyclerViewAdapter(List<New> items, OnListFragmentInteractionListener listener) {
+    public MyNewsRecyclerViewAdapter(List<New> items, OnListFragmentInteractionListener listener, Context context) {
         list = items;
         mListener = listener;
+        this.context = context;
     }
 
     @Override
@@ -38,6 +42,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         if(list!=null) {
             holder.title.setText(list.get(position).getTitle());
             holder.content.setText(list.get(position).getDescription());
+            Glide.with(context).load(list.get(position).getCoverImage()).apply(RequestOptions.centerCropTransform()).into(holder.image);
         }
        // holder.image.setImageURI(Uri.parse(list.get(position).getCoverImage()));
 

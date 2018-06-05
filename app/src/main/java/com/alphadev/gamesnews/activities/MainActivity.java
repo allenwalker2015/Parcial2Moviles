@@ -1,5 +1,8 @@
 package com.alphadev.gamesnews.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,6 +34,8 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     GamesNewsAPIService service;
+    SharedPreferences sp;
+    private String token=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        sp = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         service = GamesNewsAPIUtils.getAPIService();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +64,15 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        token = sp.getString("token","");
+        if(token.equals("")){
+            Intent i = new Intent(this,LoginActivity.class);
+            startActivityForResult(i,1);
+        }else{
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new NewsFragment().newInstance(2,"Bearer "+token));
+            transaction.commit();
+        }
 
     }
 
@@ -125,7 +139,7 @@ public class MainActivity extends AppCompatActivity
                     showResponse(token);
                     if(token!=null) {
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.fragment_container, new NewsFragment().newInstance(2, response.body().getToken()));
+                        transaction.replace(R.id.fragment_container, new NewsFragment().newInstance(2, response.body().getProcessedToken()));
                         transaction.commit();
                         Log.i("MAIN", "login submitted to API." + response.body().toString());
                         getUsers(response.body());

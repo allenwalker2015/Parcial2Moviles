@@ -63,7 +63,7 @@ public class NewsFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            final MyNewsRecyclerViewAdapter mAdapter = new MyNewsRecyclerViewAdapter(gamesNewsViewModel.getAllNews(token), mListener);
+            final MyNewsRecyclerViewAdapter mAdapter = new MyNewsRecyclerViewAdapter(gamesNewsViewModel.getAllNews(token), mListener, context);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
