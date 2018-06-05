@@ -5,18 +5,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     GamesNewsAPIService service;
     SharedPreferences sp;
-    private String token=null;
+    private String token = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +51,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                logIn("00053812","00053812");
-
+             //   logIn("00053812", "00053812");
             }
         });
 
@@ -64,13 +63,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        token = sp.getString("token","");
-        if(token.equals("")){
-            Intent i = new Intent(this,LoginActivity.class);
-            startActivityForResult(i,1);
-        }else{
+        token = sp.getString("token", "");
+        if (token.equals("")) {
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+            finish();
+        } else {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, new NewsFragment().newInstance(2,"Bearer "+token));
+            transaction.replace(R.id.fragment_container, new NewsFragment().newInstance(2, "Bearer " + token));
             transaction.commit();
         }
 
@@ -121,61 +121,17 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_fav) {
-
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
 
-    public void logIn(String title, String body) {
-        service.logIn(title, body).enqueue(new Callback<Token>() {
-            @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
-                if (response.isSuccessful()) {
-                    String token = response.body().getToken();
-                    showResponse(token);
-                    if(token!=null) {
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.fragment_container, new NewsFragment().newInstance(2, response.body().getProcessedToken()));
-                        transaction.commit();
-                        Log.i("MAIN", "login submitted to API." + response.body().toString());
-                        getUsers(response.body());
-                    }
-                    else{
-                        showResponse("LAS CREDENCIALES SON INVALDIDAS BITCH");
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Token> call, Throwable t) {
-                Log.e("MAIN", "Unable to submit login to API.");
-            }
-        });
-    }
 
-    public void getUsers(Token token){
-        service.getAllUsers(token.getProcessedToken()).enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    showResponse(response.body().get(0).toString());
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                showResponse(call.request().toString());
-                showResponse(call.request().headers().toString());
-                showResponse(t.getMessage());
-            }
-        });
-    }
 
-    public void showResponse(String response) {
-        Log.d("MAIN_RESPONSE", "showResponse: " + response);
-    }
+
+
 }

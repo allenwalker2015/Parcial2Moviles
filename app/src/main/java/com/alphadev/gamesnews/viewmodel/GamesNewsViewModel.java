@@ -2,6 +2,7 @@ package com.alphadev.gamesnews.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import com.alphadev.gamesnews.api.pojo.New;
@@ -19,7 +20,15 @@ public class GamesNewsViewModel extends AndroidViewModel {
 
     }
 
-    public List<New>getAllNews(String token){
-       return mRepository.getAllNews(token);
+//    public List<New>getAllNews(String token){
+//       return mRepository.getAllNews(token);
+//    }
+
+    public LiveData<List<com.alphadev.gamesnews.room.model.New>> getAllNews(){
+        return mRepository.getAllNews();
+    }
+
+    public boolean updateNews(String token){
+        return mRepository.updateNews(token);
     }
 }

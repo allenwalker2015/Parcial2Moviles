@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alphadev.gamesnews.api.pojo.New;
+
 import com.alphadev.gamesnews.fragment.NewsFragment.OnListFragmentInteractionListener;
 import com.alphadev.gamesnews.R;
+import com.alphadev.gamesnews.room.model.New;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -19,13 +20,12 @@ import java.util.List;
 
 public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<New> list;
-    private final OnListFragmentInteractionListener mListener;
+    private List<New> list;
+
     private Context context;
 
-    public MyNewsRecyclerViewAdapter(List<New> items, OnListFragmentInteractionListener listener, Context context) {
-        list = items;
-        mListener = listener;
+    public MyNewsRecyclerViewAdapter( Context context) {
+
         this.context = context;
     }
 
@@ -65,6 +65,10 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             return list.size();
         }
         return 0;
+    }
+
+    public void setList(List<New> list) {
+        this.list = list;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -2,7 +2,10 @@ package com.alphadev.gamesnews.room.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.NonNull;
+
+import java.util.Date;
 
 @Entity(tableName = "new")
 public class New {
@@ -24,9 +27,23 @@ public class New {
     private String coverImage;
     @ColumnInfo(name ="description")
     private String description;
-//    @ColumnInfo(name ="created_date")
-//
-//    private String createdDate;
+
+    @ColumnInfo(name ="favorite")
+    private boolean favorite;
+    @ColumnInfo(name ="created_date")
+
+    private String createdDate;
+
+
+    @TypeConverter
+    public static Date fromTimestamp(Long value) {
+        return value == null ? null : new Date(value);
+    }
+
+    @TypeConverter
+    public static Long dateToTimestamp(Date date) {
+        return date == null ? null : date.getTime();
+    }
 //    @ColumnInfo(name ="__v")
 //
 //    private Integer v;
@@ -35,13 +52,14 @@ public class New {
 
     }
 
-    public New(@NonNull String id, String title, String body, String game, String coverImage, String description) {
+    public New(@NonNull String id, String title, String body, String game, String coverImage, String description, boolean favorite) {
         this.id = id;
         this.title = title;
         this.body = body;
         this.game = game;
         this.coverImage = coverImage;
         this.description = description;
+        this.favorite = favorite;
     }
 
     public String getId() {
@@ -90,6 +108,14 @@ public class New {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 
 //    public String getCreatedDate() {

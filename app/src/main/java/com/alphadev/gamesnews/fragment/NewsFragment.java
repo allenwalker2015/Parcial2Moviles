@@ -1,8 +1,11 @@
 package com.alphadev.gamesnews.fragment;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadev.gamesnews.R;
+import com.alphadev.gamesnews.room.model.New;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -28,6 +34,7 @@ public class NewsFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private GamesNewsViewModel gamesNewsViewModel;
     private String token;
+    private MyNewsRecyclerViewAdapter mAdapter;
 
 
     public NewsFragment() {
@@ -63,7 +70,19 @@ public class NewsFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            final MyNewsRecyclerViewAdapter mAdapter = new MyNewsRecyclerViewAdapter(gamesNewsViewModel.getAllNews(token), mListener, context);
+            gamesNewsViewModel.updateNews(token);
+            LiveData<List<New>> list = gamesNewsViewModel.getAllNews();
+           
+           mAdapter = new MyNewsRecyclerViewAdapter(context);
+            list.observe(this, new Observer<List<New>>() {
+                @Override
+                public void onChanged(@Nullable List<New> news) {
+                    mAdapter.setList(news);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+
+            mAdapter.setList(list.getValue());
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
