@@ -166,7 +166,7 @@ public class GamesNewsRepository {
                     for (New n : list) {
                         newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
                                 n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
-                                n.getDescription(), false));
+                                n.getDescription(),n.getCreatedDate(), false));
                         b = true;
                     }
                 }

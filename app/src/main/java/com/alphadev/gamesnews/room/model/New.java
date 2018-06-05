@@ -34,16 +34,6 @@ public class New {
 
     private String createdDate;
 
-
-    @TypeConverter
-    public static Date fromTimestamp(Long value) {
-        return value == null ? null : new Date(value);
-    }
-
-    @TypeConverter
-    public static Long dateToTimestamp(Date date) {
-        return date == null ? null : date.getTime();
-    }
 //    @ColumnInfo(name ="__v")
 //
 //    private Integer v;
@@ -52,13 +42,14 @@ public class New {
 
     }
 
-    public New(@NonNull String id, String title, String body, String game, String coverImage, String description, boolean favorite) {
+    public New(@NonNull String id, String title, String body, String game, String coverImage, String description,String createdDate, boolean favorite) {
         this.id = id;
         this.title = title;
         this.body = body;
         this.game = game;
         this.coverImage = coverImage;
         this.description = description;
+        this.createdDate = createdDate;
         this.favorite = favorite;
     }
 
@@ -118,13 +109,13 @@ public class New {
         this.favorite = favorite;
     }
 
-//    public String getCreatedDate() {
-//        return createdDate;
-//    }
-//
-//    public void setCreatedDate(String createdDate) {
-//        this.createdDate = createdDate;
-//    }
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
 
 //    public Integer getV() {
 //        return v;
