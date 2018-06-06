@@ -11,7 +11,13 @@
         <item
             android:id="@+id/nav_games"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/games" />
+            android:title="@string/games">
+            <menu>
+                <item
+                    android:id="@+id/item1"
+                    android:title="Placeholder"></item>
+            </menu>
+        </item>
 
     </group>
 
@@ -24,9 +30,6 @@
             android:id="@+id/nav_fav"
             android:icon="@drawable/ic_menu_share"
             android:title="@string/favorites" />
-
-
-
     </group>
 
 </menu>

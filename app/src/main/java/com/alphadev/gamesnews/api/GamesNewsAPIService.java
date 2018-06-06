@@ -8,7 +8,6 @@ import com.alphadev.gamesnews.api.pojo.Token;
 import com.alphadev.gamesnews.api.pojo.User;
 import com.alphadev.gamesnews.api.pojo.UserWithFavs;
 
-
 import java.util.List;
 
 import retrofit2.Call;
@@ -107,9 +106,8 @@ public interface GamesNewsAPIService {
     Call<List<String>> getPlayersCategory(@Header("Authorization") String authHeader);
 
     //AGREGAR NUEVO PLAYER
-    @GET("/players")
-    @FormUrlEncoded
-    Call<List<String>> getPlayersByCategory(@Header("Authorization") String authHeader,@Field("name") String name,@Field("biografia") String biografia, @Field("avatar") String avatar,@Field("game") String category);
+    @GET("/players/type/{game}")
+    Call<List<Player>> getPlayersByCategory(@Header("Authorization") String authHeader, @Path("game") String category);
 
     //OBTENER JUGADOR POR ID
     @GET("/players/{id}")

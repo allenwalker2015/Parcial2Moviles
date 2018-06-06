@@ -13,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,15 +20,8 @@ import android.view.View;
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
-import com.alphadev.gamesnews.api.pojo.Token;
-import com.alphadev.gamesnews.api.pojo.User;
 import com.alphadev.gamesnews.fragment.NewsFragment;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.alphadev.gamesnews.fragment.TopPlayersFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,6 +54,14 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu m = navigationView.getMenu().findItem(R.id.nav_games).getSubMenu();
+        m.clear();
+
+        m.add("Hola");
+        m.add("Hola");
+
+
+
         navigationView.setNavigationItemSelectedListener(this);
         token = sp.getString("token", "");
         if (token.equals("")) {
@@ -119,6 +119,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_games) {
 
         } else if (id == R.id.nav_settings) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new TopPlayersFragment().newInstance(1, "Bearer " + token));
+            transaction.commit();
 
         } else if (id == R.id.nav_fav) {
         }

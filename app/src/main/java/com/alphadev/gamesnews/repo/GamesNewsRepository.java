@@ -34,7 +34,6 @@ public class GamesNewsRepository {
     public GamesNewsRepository(Application application) {
         this.application = application;
         GamesNewsDataBase db = GamesNewsDataBase.getDatabase(application);
-        // favoriteNewsDao = db.favoriteNewsDao();
         newDao = db.newDao();
         playerDao = db.playerDao();
         userDao = db.userDao();
@@ -43,34 +42,6 @@ public class GamesNewsRepository {
         mAllNews = newDao.getAllNews();
         mAllFavoriteNews = newDao.getFavoritesNews();
     }
-
-//    public List<New> getAllNews(String token) {
-//        AsyncTask<String, Void, List<New>> task = new AsyncTask<String, Void, List<New>>() {
-//            @Override
-//            protected List<New> doInBackground(String... strings) {
-//                 List<New> list = null;
-//                if (isOnline()) {
-//
-//                    try {
-//                        list = service.getAllNews(strings[0]).execute().body();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                return list;
-//            }
-//
-//        };
-//
-//        try {
-//            return task.execute(token).get();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
 
     public LiveData<List<com.alphadev.gamesnews.room.model.New>> getAllNews() {
         return mAllNews;
@@ -147,6 +118,20 @@ public class GamesNewsRepository {
         return false;
     }
 
+
+    public boolean updatePlayers(String token, String category) {
+        UpdatePlayersTask task = new UpdatePlayersTask();
+        try {
+            boolean b = task.execute(token, category).get();
+            return b;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public class UpdateNewsTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected void onPreExecute() {
@@ -158,7 +143,7 @@ public class GamesNewsRepository {
         protected Boolean doInBackground(String... strings) {
             boolean b = false;
 
-            List<New> list = null;
+            List<New> list;
             try {
                 list = service.getAllNews(strings[0]).execute().body();
                 if (list != null) {
@@ -167,6 +152,35 @@ public class GamesNewsRepository {
                         newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
                                 n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
                                 n.getDescription(),n.getCreatedDate(), false));
+                        b = true;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return b;
+        }
+    }
+
+    public class UpdatePlayersTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            boolean b = false;
+
+            List<com.alphadev.gamesnews.api.pojo.Player> list;
+            try {
+                list = service.getPlayersByCategory(strings[0], strings[1]).execute().body();
+                if (list != null) {
+                    newDao.deleteAll();
+                    for (com.alphadev.gamesnews.api.pojo.Player n : list) {
+                        playerDao.insert(new com.alphadev.gamesnews.room.model.Player(
+                                n.getAvatar(), n.getId(), n.getName(), n.getBiografia(), n.getGame()));
                         b = true;
                     }
                 }

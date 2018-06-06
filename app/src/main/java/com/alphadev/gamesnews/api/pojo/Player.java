@@ -24,7 +24,8 @@ public class Player {
         @Expose
         private Integer v;
 
-        public String getAvatar() {
+
+    public String getAvatar() {
             return avatar;
         }
 
