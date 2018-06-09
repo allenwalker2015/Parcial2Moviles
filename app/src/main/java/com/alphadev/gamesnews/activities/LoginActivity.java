@@ -334,12 +334,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 UserWithFavs user = null;
                 try {
                     token = service.logIn(mEmail, mPassword).execute().body();
-                    user = service.getUserDetail(token.getProcessedToken()).execute().body();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 if (token != null && token.getToken() != null && user != null) {
                     sp.edit().putString("token", token.getToken()).commit();
+
+                    try {
+                        user = service.getUserDetail(token.getProcessedToken()).execute().body();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     sp.edit().putString("userId", user.getId()).commit();
                     isUserUpdated = gamesNewsViewModel.updateUserInfoNoAsync(token.getProcessedToken());
 
