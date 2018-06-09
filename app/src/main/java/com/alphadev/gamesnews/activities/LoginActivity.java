@@ -338,7 +338,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (token != null && token.getToken() != null && user != null) {
+                if (token != null && token.getToken() != null) {
                     sp.edit().putString("token", token.getToken()).commit();
 
                     try {
