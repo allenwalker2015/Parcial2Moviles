@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,10 +32,12 @@ public class NewsFragment extends Fragment {
 
 
     private static final String ARG_COLUMN_COUNT = "column-count", TOKEN = "token";
+    private static final String USER_ID = "userId";
     private int mColumnCount = 1;
+    SharedPreferences sp;
     private OnListFragmentInteractionListener mListener;
     private GamesNewsViewModel gamesNewsViewModel;
-    private String token;
+    private String token, user;
     private MyNewsRecyclerViewAdapter mAdapter;
 
 
@@ -67,14 +70,23 @@ public class NewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         gamesNewsViewModel =  ViewModelProviders.of(this).get(GamesNewsViewModel.class);
+        sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             gamesNewsViewModel.updateNews(token);
+            user = sp.getString(USER_ID, "");
             final LiveData<List<New>> list = gamesNewsViewModel.getAllNews();
-           
-           mAdapter = new MyNewsRecyclerViewAdapter(context);
+
+            mAdapter = new MyNewsRecyclerViewAdapter(context) {
+                @Override
+                public void setAction(boolean isFavorite, String n_new) {
+                    if (!isFavorite) {
+                        gamesNewsViewModel.addFavorite(token, user, n_new);
+                    }
+                }
+            };
             list.observe(this, new Observer<List<New>>() {
                 @Override
                 public void onChanged(@Nullable List<New> news) {

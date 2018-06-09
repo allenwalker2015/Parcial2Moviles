@@ -17,6 +17,14 @@ public class GamesNewsViewModel extends AndroidViewModel {
             mRepository = new GamesNewsRepository(application);
     }
 
+    public boolean addFavorite(String token, String user, String n_new) {
+        return mRepository.addFavorite(token, user, n_new);
+    }
+
+    public boolean removeFavorite(String token, String user, String n_new) {
+        return mRepository.removeFavorite(token, user, n_new);
+    }
+
     public LiveData<List<com.alphadev.gamesnews.room.model.New>> getAllNews(){
         return mRepository.getAllNews();
     }
@@ -29,13 +37,16 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return mRepository.getPlayersByCategory(category);
     }
 
-
     public boolean updateNews(String token){
         return mRepository.updateNews(token);
     }
 
     public boolean updateUserInfo(String token) {
         return mRepository.updateUserInfo(token);
+    }
+
+    public boolean updateUserInfoNoAsync(String token) {
+        return mRepository.updateUserInfoNoAsync(token);
     }
 
     public boolean updateNewsByCategory(String token, String category) {

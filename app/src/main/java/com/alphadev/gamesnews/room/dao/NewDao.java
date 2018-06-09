@@ -39,6 +39,12 @@ public interface NewDao {
     @Query("SELECT * from new WHERE game=:category")
     LiveData<List<New>> getNewsByCategory(String category);
 
+    @Query("UPDATE new SET favorite=1 WHERE _id=:id")
+    void setFavorite(String id);
+
+    @Query("UPDATE new SET favorite=0 WHERE _id=:id")
+    void unsetFavorite(String id);
+
 
 
 

@@ -20,11 +20,12 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 
-public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder> {
+public abstract class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder> {
 
     private List<New> list;
 
     private Context context;
+
 
     public MyNewsRecyclerViewAdapter( Context context) {
 
@@ -55,29 +56,29 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
                     context.startActivity(i);
                 }
             });
+            if (list.get(position).isFavorite())
+                holder.star.setImageResource(android.R.drawable.star_big_on);
+            else holder.star.setImageResource(android.R.drawable.star_big_off);
             holder.star.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Aqui ira la logica de gurdar favorito.
                     Toast.makeText(context, "Haz hecho click en favoritos", Toast.LENGTH_SHORT).show();
+                    setAction(list.get(position).isFavorite(), list.get(position).getId());
+
+
                 }
             });
         }
-       // holder.image.setImageURI(Uri.parse(list.get(position).getCoverImage()));
 
 
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != mListener) {
-//                    // Notify the active callbacks interface (the activity, if the
-//                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder);
-//                }
-//            }
-//        });
+        // holder.image.setImageURI(Uri.parse(list.get(position).getCoverImage()));
+
+
     }
 
+
+    public abstract void setAction(boolean isFavorite, String id_new);
     @Override
     public int getItemCount() {
         if(list!=null) {

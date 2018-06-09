@@ -19,4 +19,7 @@ public interface FavoriteDao {
     @Insert
     void insert(Favorite favorite);
 
+    @Query("DELETE FROM favorite where idnew=:idnew and iduser=:iduser")
+    void delete(String idnew, String iduser);
+
 }

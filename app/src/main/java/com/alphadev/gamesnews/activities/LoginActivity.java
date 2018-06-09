@@ -35,6 +35,7 @@ import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.api.pojo.Token;
+import com.alphadev.gamesnews.api.pojo.UserWithFavs;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
 import java.io.IOException;
@@ -327,38 +328,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                // TODO: attempt authentication against a network service.
-
-
-//            try {
-//                // Simulate network access.
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                return false;
-//            }
-
-
-//            for (String credential : DUMMY_CREDENTIALS) {
-//                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(mEmail)) {
-//                    // Account exists, return true if the password matches.
-//                    return pieces[1].equals(mPassword);
-//                }
-//            }
                 Token token;
                 token = null;
-
+                boolean isUserUpdated = false;
+                UserWithFavs user = null;
                 try {
                     token = service.logIn(mEmail, mPassword).execute().body();
+                    user = service.getUserDetail(token.getProcessedToken()).execute().body();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (token != null && token.getToken() != null) {
+                if (token != null && token.getToken() != null && user != null) {
                     sp.edit().putString("token", token.getToken()).commit();
-
+                    sp.edit().putString("userId", user.getId()).commit();
+                    isUserUpdated = gamesNewsViewModel.updateUserInfoNoAsync(token.getProcessedToken());
 
                 }
-                return token != null && token.getToken() != null;
+                return token != null && token.getToken() != null && isUserUpdated;
             }
 
             @Override

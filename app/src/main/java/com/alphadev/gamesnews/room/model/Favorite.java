@@ -21,6 +21,7 @@ public class Favorite implements Serializable {
 
     private String idnew;
 
+
     public Favorite(String idnew, String iduser) {
         this.idnew = idnew;
         this.iduser = iduser;

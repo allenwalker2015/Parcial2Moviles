@@ -71,7 +71,12 @@ public class Game_GeneralFragment extends Fragment {
             gamesNewsViewModel.updateNewsByCategory(token, category);
             final LiveData<List<New>> list = gamesNewsViewModel.getAllNewsByCategory(category);
 
-            mAdapter = new MyNewsRecyclerViewAdapter(context);
+            mAdapter = new MyNewsRecyclerViewAdapter(context) {
+                @Override
+                public void setAction(boolean isFavorite, String id_new) {
+
+                }
+            };
             list.observe(this, new Observer<List<New>>() {
                 @Override
                 public void onChanged(@Nullable List<New> news) {

@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         Menu m = navigationView.getMenu().findItem(R.id.nav_games).getSubMenu();
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.name);
+        //name.setText();
         m.clear();
 
         m.add("Hola");
@@ -73,7 +76,6 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, new NewsFragment().newInstance(2, "Bearer " + token));
             transaction.commit();
         }
-
     }
 
     @Override

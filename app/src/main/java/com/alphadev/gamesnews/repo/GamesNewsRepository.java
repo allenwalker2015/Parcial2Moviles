@@ -9,7 +9,10 @@ import android.os.AsyncTask;
 
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
+import com.alphadev.gamesnews.api.pojo.FavoriteNew;
+import com.alphadev.gamesnews.api.pojo.MessageResult;
 import com.alphadev.gamesnews.api.pojo.New;
+import com.alphadev.gamesnews.api.pojo.NewNew;
 import com.alphadev.gamesnews.api.pojo.UserWithFavs;
 import com.alphadev.gamesnews.room.GamesNewsDataBase;
 import com.alphadev.gamesnews.room.dao.FavoriteDao;
@@ -102,6 +105,26 @@ public class GamesNewsRepository {
         return false;
     }
 
+    public boolean updateUserInfoNoAsync(String token) {
+        UserWithFavs user;
+        boolean b = false;
+        try {
+            user = service.getUserDetail(token).execute().body();
+            if (user != null) {
+                userDao.deleteAll();
+                favoriteDao.deleteAll();
+                userDao.insert(new User(user.getId(), user.getUser(), ""));
+                for (FavoriteNew n : user.getFavoriteNews()) {
+                    favoriteDao.insert(new Favorite(n.getId(), user.getId()));
+                }
+                b = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
     public boolean insertUser(User user) {
         boolean b = false;
         AsyncTask<User, Void, Boolean> task = new AsyncTask<User, Void, Boolean>() {
@@ -149,6 +172,34 @@ public class GamesNewsRepository {
         }
         return false;
     }
+
+    public boolean addFavorite(String token, String user, String n_new) {
+        addFavoriteTask task = new addFavoriteTask();
+        try {
+            boolean b = task.execute(token, user, n_new).get();
+            return b;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean removeFavorite(String token, String user, String n_new) {
+        removeFavoriteTask task = new removeFavoriteTask();
+        try {
+            boolean b = task.execute(token, user, n_new).get();
+            return b;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 
 
     public boolean updatePlayersByCategory(String token, String category) {
@@ -241,8 +292,8 @@ public class GamesNewsRepository {
                 if (user != null) {
                     userDao.deleteAll();
                     favoriteDao.deleteAll();
-                    userDao.insert(new User(user.getId(), user.getUser(), user.getAvatar()));
-                    for (New n : user.getNews()) {
+                    userDao.insert(new User(user.getId(), user.getUser(), ""));
+                    for (FavoriteNew n : user.getFavoriteNews()) {
                         favoriteDao.insert(new Favorite(n.getId(), user.getId()));
                     }
                 }
@@ -274,6 +325,58 @@ public class GamesNewsRepository {
                                 n.getAvatar(), n.getId(), n.getName(), n.getBiografia(), n.getGame()));
                         b = true;
                     }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return b;
+        }
+    }
+
+    public class addFavoriteTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            boolean b = false;
+            NewNew n;
+
+            try {
+                n = service.addUserFav(strings[0], strings[1], strings[2]).execute().body();
+                if (n != null) {
+                    favoriteDao.insert(new Favorite(strings[2], strings[1]));
+                    newDao.setFavorite(strings[2]);
+                    b = true;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return b;
+        }
+    }
+
+    public class removeFavoriteTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            boolean b = false;
+            MessageResult n;
+
+            try {
+                n = service.deleteUserFav(strings[0], strings[1], strings[2]).execute().body();
+                if (n != null) {
+                    favoriteDao.delete(strings[2], strings[1]);
+                    newDao.unsetFavorite(strings[2]);
+                    b = true;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
