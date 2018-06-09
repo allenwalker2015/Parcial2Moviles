@@ -3,24 +3,23 @@ package com.alphadev.gamesnews.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -32,15 +31,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.api.pojo.Token;
+import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -52,6 +51,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Id to identity READ_CONTACTS permission request.
      */
+
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
@@ -72,12 +72,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     GamesNewsAPIService service;
     SharedPreferences sp;
     String token;
+    private GamesNewsViewModel gamesNewsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         sp = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+        gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
         token = sp.getString("token", "");
         if (!token.equals("")) {
             Intent i = new Intent(this, MainActivity.class);
@@ -345,6 +347,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //            }
                 Token token;
                 token = null;
+
                 try {
                     token = service.logIn(mEmail, mPassword).execute().body();
                 } catch (IOException e) {
@@ -352,6 +355,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
                 if (token != null && token.getToken() != null) {
                     sp.edit().putString("token", token.getToken()).commit();
+
+
                 }
                 return token != null && token.getToken() != null;
             }

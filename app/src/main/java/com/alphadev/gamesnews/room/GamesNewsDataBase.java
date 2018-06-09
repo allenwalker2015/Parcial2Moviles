@@ -6,14 +6,16 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.alphadev.gamesnews.room.dao.FavoriteDao;
 import com.alphadev.gamesnews.room.dao.NewDao;
 import com.alphadev.gamesnews.room.dao.PlayerDao;
 import com.alphadev.gamesnews.room.dao.UserDao;
+import com.alphadev.gamesnews.room.model.Favorite;
 import com.alphadev.gamesnews.room.model.New;
 import com.alphadev.gamesnews.room.model.Player;
 import com.alphadev.gamesnews.room.model.User;
 
-@Database(entities = { New.class, Player.class, User.class}, version = 1)
+@Database(entities = {New.class, Player.class, User.class, Favorite.class}, version = 1)
 public abstract class GamesNewsDataBase extends RoomDatabase {
 
 
@@ -21,6 +23,8 @@ public abstract class GamesNewsDataBase extends RoomDatabase {
     public abstract NewDao newDao();
     public  abstract PlayerDao playerDao();
     public  abstract UserDao userDao();
+
+    public abstract FavoriteDao favoriteDao();
     private static GamesNewsDataBase INSTANCE;
 
 
@@ -29,7 +33,7 @@ public abstract class GamesNewsDataBase extends RoomDatabase {
             synchronized (GamesNewsDataBase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            GamesNewsDataBase.class, "word_database")
+                            GamesNewsDataBase.class, "games_news_database")
                             .build();
                 }
             }

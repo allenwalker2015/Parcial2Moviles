@@ -34,6 +34,10 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return mRepository.updateNews(token);
     }
 
+    public boolean updateUserInfo(String token) {
+        return mRepository.updateUserInfo(token);
+    }
+
     public boolean updateNewsByCategory(String token, String category) {
         return mRepository.updateNews(token);
     }

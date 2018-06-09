@@ -5,14 +5,15 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import java.util.List;
+import java.io.Serializable;
 @Entity(tableName = "user")
-public class User {
+public class User implements Serializable {
 
     @PrimaryKey
     @NonNull
    @ColumnInfo(name ="_id")
-   
+
+
     private String id;
    @ColumnInfo(name ="user")
    

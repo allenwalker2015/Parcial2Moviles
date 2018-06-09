@@ -1,14 +1,18 @@
 package com.alphadev.gamesnews.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
+import com.alphadev.gamesnews.activities.NewDetailActivity;
 import com.alphadev.gamesnews.room.model.New;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -36,11 +40,28 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         if(list!=null) {
             holder.title.setText(list.get(position).getTitle());
             holder.content.setText(list.get(position).getDescription());
             Glide.with(context).load(list.get(position).getCoverImage()).apply(RequestOptions.centerCropTransform()).into(holder.image);
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, NewDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("new", list.get(position));
+                    i.putExtras(bundle);
+                    context.startActivity(i);
+                }
+            });
+            holder.star.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Aqui ira la logica de gurdar favorito.
+                    Toast.makeText(context, "Haz hecho click en favoritos", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
        // holder.image.setImageURI(Uri.parse(list.get(position).getCoverImage()));
 
@@ -71,7 +92,8 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public ImageView image;
+        //        public final New mNew;
+        public ImageView image, star;
         public TextView title,content;
         public ViewHolder(View view) {
             super(view);
@@ -79,6 +101,8 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             image = view.findViewById(R.id.image);
             title = (TextView) view.findViewById(R.id.title);
             content = (TextView) view.findViewById(R.id.content);
+            star = view.findViewById(R.id.star);
+//            mNew = list.get(getAdapterPosition());
         }
     }
 

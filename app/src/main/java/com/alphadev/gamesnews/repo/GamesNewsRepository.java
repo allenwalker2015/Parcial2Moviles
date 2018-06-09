@@ -10,10 +10,13 @@ import android.os.AsyncTask;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.api.pojo.New;
+import com.alphadev.gamesnews.api.pojo.UserWithFavs;
 import com.alphadev.gamesnews.room.GamesNewsDataBase;
+import com.alphadev.gamesnews.room.dao.FavoriteDao;
 import com.alphadev.gamesnews.room.dao.NewDao;
 import com.alphadev.gamesnews.room.dao.PlayerDao;
 import com.alphadev.gamesnews.room.dao.UserDao;
+import com.alphadev.gamesnews.room.model.Favorite;
 import com.alphadev.gamesnews.room.model.Player;
 import com.alphadev.gamesnews.room.model.User;
 
@@ -24,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 public class GamesNewsRepository {
     private final LiveData<List<com.alphadev.gamesnews.room.model.New>> mAllNews;
     private final LiveData<List<com.alphadev.gamesnews.room.model.New>> mAllFavoriteNews;
+    private static FavoriteDao favoriteDao;
     private GamesNewsAPIService service;
     private Application application;
     //    private FavoriteNewsDao favoriteNewsDao;
@@ -38,10 +42,11 @@ public class GamesNewsRepository {
         playerDao = db.playerDao();
         userDao = db.userDao();
         service = GamesNewsAPIUtils.getAPIService();
-
+        favoriteDao = db.favoriteDao();
         mAllNews = newDao.getAllNews();
         mAllFavoriteNews = newDao.getFavoritesNews();
     }
+
 
     public LiveData<List<com.alphadev.gamesnews.room.model.New>> getAllNews() {
         return mAllNews;
@@ -82,6 +87,19 @@ public class GamesNewsRepository {
 
     public User getCurrentUserInfo() {
         return userDao.getUser();
+    }
+
+    public boolean updateUserInfo(String token) {
+        UpdateUserInfoTask task = new UpdateUserInfoTask();
+        try {
+            boolean b = task.execute(token).get();
+            return b;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean insertUser(User user) {
@@ -197,6 +215,35 @@ public class GamesNewsRepository {
                                 n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
                                 n.getDescription(), n.getCreatedDate(), false));
                         b = true;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return b;
+        }
+    }
+
+    public class UpdateUserInfoTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            boolean b = false;
+
+            UserWithFavs user;
+            try {
+                user = service.getUserDetail(strings[0]).execute().body();
+                if (user != null) {
+                    userDao.deleteAll();
+                    favoriteDao.deleteAll();
+                    userDao.insert(new User(user.getId(), user.getUser(), user.getAvatar()));
+                    for (New n : user.getNews()) {
+                        favoriteDao.insert(new Favorite(n.getId(), user.getId()));
                     }
                 }
             } catch (IOException e) {

@@ -1,14 +1,14 @@
 package com.alphadev.gamesnews.room.model;
+
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.NonNull;
 
-import java.util.Date;
+import java.io.Serializable;
 
 @Entity(tableName = "new")
-public class New {
+public class New implements Serializable {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name ="_id")
