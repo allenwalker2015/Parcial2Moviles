@@ -116,11 +116,25 @@ public class GamesNewsRepository {
             e.printStackTrace();
         }
         return false;
+
+    }
+
+    public boolean updateNewsByCategory(String token, String category) {
+        UpdateNewsByCategoryTask task = new UpdateNewsByCategoryTask();
+        try {
+            boolean b = task.execute(token, category).get();
+            return b;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 
-    public boolean updatePlayers(String token, String category) {
-        UpdatePlayersTask task = new UpdatePlayersTask();
+    public boolean updatePlayersByCategory(String token, String category) {
+        UpdatePlayersTaskByCategory task = new UpdatePlayersTaskByCategory();
         try {
             boolean b = task.execute(token, category).get();
             return b;
@@ -162,7 +176,37 @@ public class GamesNewsRepository {
         }
     }
 
-    public class UpdatePlayersTask extends AsyncTask<String, Void, Boolean> {
+    public class UpdateNewsByCategoryTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            boolean b = false;
+
+            List<New> list;
+            try {
+                list = service.getNewsByCategory(strings[0], strings[1]).execute().body();
+                if (list != null) {
+                    newDao.deleteByCategory(strings[1]);
+                    for (New n : list) {
+                        newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
+                                n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
+                                n.getDescription(), n.getCreatedDate(), false));
+                        b = true;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return b;
+        }
+    }
+
+    public class UpdatePlayersTaskByCategory extends AsyncTask<String, Void, Boolean> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

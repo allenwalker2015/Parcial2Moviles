@@ -21,6 +21,10 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return mRepository.getAllNews();
     }
 
+    public LiveData<List<com.alphadev.gamesnews.room.model.New>> getAllNewsByCategory(String category) {
+        return mRepository.getNewsByCategory(category);
+    }
+
     public LiveData<List<com.alphadev.gamesnews.room.model.Player>> getPlayersByCategory(String category) {
         return mRepository.getPlayersByCategory(category);
     }
@@ -30,7 +34,11 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return mRepository.updateNews(token);
     }
 
+    public boolean updateNewsByCategory(String token, String category) {
+        return mRepository.updateNews(token);
+    }
+
     public boolean updateTopPlayersByCategory(String token, String category) {
-        return mRepository.updatePlayers(token, category);
+        return mRepository.updatePlayersByCategory(token, category);
     }
 }

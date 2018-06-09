@@ -8,7 +8,6 @@ import android.arch.persistence.room.Query;
 
 import com.alphadev.gamesnews.room.model.New;
 import com.alphadev.gamesnews.room.model.Player;
-import com.alphadev.gamesnews.room.model.User;
 
 import java.util.List;
 
@@ -24,6 +23,9 @@ public interface NewDao {
 
     @Query("DELETE FROM new")
     void deleteAll();
+
+    @Query("DELETE FROM new where game=:category")
+    void deleteByCategory(String category);
 
     @Query("SELECT * from new WHERE _id=:id")
     New getNewByID(String id);

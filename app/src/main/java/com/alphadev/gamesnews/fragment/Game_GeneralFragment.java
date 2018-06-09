@@ -13,47 +13,37 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
-import com.alphadev.gamesnews.fragment.dummy.DummyContent.DummyItem;
-import com.alphadev.gamesnews.room.model.Player;
+import com.alphadev.gamesnews.adapter.MyNewsRecyclerViewAdapter;
+import com.alphadev.gamesnews.room.model.New;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
 import java.util.List;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
-public class TopPlayersFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final String TOKEN = "token";
-    // TODO: Customize parameters
+public class Game_GeneralFragment extends Fragment {
+
+    private static final String ARG_COLUMN_COUNT = "column-count", TOKEN = "token", CATEGORY = "category";
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+    private NewsFragment.OnListFragmentInteractionListener mListener;
     private GamesNewsViewModel gamesNewsViewModel;
-    private MyTopPlayersRecyclerViewAdapter mAdapter;
     private String token;
+    private MyNewsRecyclerViewAdapter mAdapter;
+    private String category;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public TopPlayersFragment() {
+
+    public Game_GeneralFragment() {
     }
 
-    // TODO: Customize parameter initialization
+
     @SuppressWarnings("unused")
-    public static TopPlayersFragment newInstance(int columnCount, String token) {
-        TopPlayersFragment fragment = new TopPlayersFragment();
+    public static Game_GeneralFragment newInstance(int columnCount, String token, String category) {
+        Game_GeneralFragment fragment = new Game_GeneralFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         args.putString(TOKEN, token);
+        args.putString(CATEGORY, category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,46 +55,59 @@ public class TopPlayersFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             token = getArguments().getString(TOKEN);
+            category = getArguments().getString(CATEGORY);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_topplayers_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
-        final LiveData<List<Player>> list = gamesNewsViewModel.getPlayersByCategory("lol");
-        if (gamesNewsViewModel.updateTopPlayersByCategory(token, "lol")) {
-            Toast.makeText(getContext(), "Se ha actualizado correctamente la lista de jugadores", Toast.LENGTH_SHORT).show();
-        }
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
+            gamesNewsViewModel.updateNewsByCategory(token, category);
+            final LiveData<List<New>> list = gamesNewsViewModel.getAllNewsByCategory(category);
+
+            mAdapter = new MyNewsRecyclerViewAdapter(context);
+            list.observe(this, new Observer<List<New>>() {
+                @Override
+                public void onChanged(@Nullable List<New> news) {
+                    mAdapter.setList(news);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+
+//            AsyncTask<Void,Void,Void> task = new AsyncTask<Void, Void, Void>() {
+//                @Override
+//                protected Void doInBackground(Void... voids) {
+//                    mAdapter.setList(list.getValue());
+//                    return null;
+//                }
+//            };
+//            task.execute();
+
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+                GridLayoutManager mLayoutManager = new GridLayoutManager(context, mColumnCount);
+                mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        switch (mAdapter.getItemViewType(position)) {
+                            case 1:
+                                return 2;
+                            default:
+                                return 1;
+                        }
+                    }
+                });
+                recyclerView.setLayoutManager(mLayoutManager);
             }
-            mAdapter = new MyTopPlayersRecyclerViewAdapter();
             recyclerView.setAdapter(mAdapter);
         }
-
-        list.observe(this, new Observer<List<Player>>() {
-            @Override
-            public void onChanged(@Nullable List<Player> players) {
-                mAdapter.setList(players);
-            }
-        });
-
-//        AsyncTask<Void,Void,Void> setPlayersListTask = new AsyncTask<Void, Void, Void>() {
-//            @Override
-//            protected Void doInBackground(Void... voids) {
-//                mAdapter.setList(list.getValue());
-//                return null;
-//            }
-//        };
-//        setPlayersListTask.execute();
         return view;
     }
 
@@ -138,6 +141,6 @@ public class TopPlayersFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        // void onListFragmentInteraction(DummyItem item);
     }
 }

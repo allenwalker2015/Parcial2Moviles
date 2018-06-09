@@ -20,8 +20,8 @@ import android.view.View;
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
+import com.alphadev.gamesnews.fragment.CategoryFragment;
 import com.alphadev.gamesnews.fragment.NewsFragment;
-import com.alphadev.gamesnews.fragment.TopPlayersFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, new TopPlayersFragment().newInstance(1, "Bearer " + token));
+            transaction.replace(R.id.fragment_container, CategoryFragment.newInstance(token, "lol"));
             transaction.commit();
 
         } else if (id == R.id.nav_fav) {
