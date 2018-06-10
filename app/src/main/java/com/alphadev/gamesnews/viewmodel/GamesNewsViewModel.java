@@ -5,24 +5,27 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import com.alphadev.gamesnews.repo.GamesNewsPoblationRepository;
 import com.alphadev.gamesnews.repo.GamesNewsRepository;
 
 import java.util.List;
 
 public class GamesNewsViewModel extends AndroidViewModel {
     private final GamesNewsRepository mRepository;
+    private final GamesNewsPoblationRepository gamesNewsPoblationRepository;
 
     public GamesNewsViewModel(@NonNull Application application) {
             super(application);
             mRepository = new GamesNewsRepository(application);
+        gamesNewsPoblationRepository = new GamesNewsPoblationRepository(application);
     }
 
     public boolean addFavorite(String token, String user, String n_new) {
-        return mRepository.addFavorite(token, user, n_new);
+        return gamesNewsPoblationRepository.addFavorite(token, user, n_new);
     }
 
     public boolean removeFavorite(String token, String user, String n_new) {
-        return mRepository.removeFavorite(token, user, n_new);
+        return gamesNewsPoblationRepository.removeFavorite(token, user, n_new);
     }
 
     public LiveData<List<com.alphadev.gamesnews.room.model.New>> getAllNews(){
@@ -50,23 +53,23 @@ public class GamesNewsViewModel extends AndroidViewModel {
     }
 
     public boolean updateNews(String token){
-        return mRepository.updateNews(token);
+        return gamesNewsPoblationRepository.updateNews(token);
     }
 
     public boolean updateUserInfo(String token) {
-        return mRepository.updateUserInfo(token);
+        return gamesNewsPoblationRepository.updateUserInfo(token);
     }
 
     public boolean updateUserInfoNoAsync(String token) {
-        return mRepository.updateUserInfoNoAsync(token);
+        return gamesNewsPoblationRepository.updateUserInfoNoAsync(token);
     }
 
     public boolean updateNewsByCategory(String token, String category) {
-        return mRepository.updateNews(token);
+        return gamesNewsPoblationRepository.updateNews(token);
     }
 
     public boolean updateTopPlayersByCategory(String token, String category) {
-        return mRepository.updatePlayersByCategory(token, category);
+        return gamesNewsPoblationRepository.updatePlayersByCategory(token, category);
     }
 
 

@@ -54,11 +54,15 @@ public class NewDetailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (!n.isFavorite()) {
-                            gamesNewsViewModel.addFavorite(token, user, n.getId());
-                            fab.setImageResource(android.R.drawable.star_big_on);
+                            if (gamesNewsViewModel.addFavorite("Bearer " + token, user, n.getId())) {
+                                n.setFavorite(true);
+                                fab.setImageResource(android.R.drawable.star_big_on);
+                            }
                         } else {
-                            gamesNewsViewModel.removeFavorite(token, user, n.getId());
-                            fab.setImageResource(android.R.drawable.star_big_off);
+                            if (gamesNewsViewModel.removeFavorite("Bearer " + token, user, n.getId())) {
+                                fab.setImageResource(android.R.drawable.star_big_off);
+                                n.setFavorite(false);
+                            }
                         }
                     }
                 });
