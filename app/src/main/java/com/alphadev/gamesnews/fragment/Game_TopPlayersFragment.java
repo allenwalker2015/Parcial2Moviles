@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
+import com.alphadev.gamesnews.adapter.MyTopPlayersRecyclerViewAdapter;
 import com.alphadev.gamesnews.room.model.Player;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
@@ -89,7 +90,7 @@ public class Game_TopPlayersFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            mAdapter = new MyTopPlayersRecyclerViewAdapter();
+            mAdapter = new MyTopPlayersRecyclerViewAdapter(getContext());
             recyclerView.setAdapter(mAdapter);
         }
 

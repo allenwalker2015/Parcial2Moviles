@@ -22,32 +22,35 @@ import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
 import java.util.List;
 
+/**
+ * A fragment representing a list of Items.
+ * <p/>
+ * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * interface.
+ */
+public class FavoriteFragment extends Fragment {
 
-public class Game_GeneralFragment extends Fragment {
 
-    private static final String ARG_COLUMN_COUNT = "column-count", TOKEN = "token", CATEGORY = "category";
+    private static final String ARG_COLUMN_COUNT = "column-count", TOKEN = "token";
     private static final String USER_ID = "userId";
     private int mColumnCount = 1;
-    private NewsFragment.OnListFragmentInteractionListener mListener;
+    SharedPreferences sp;
+    private OnListFragmentInteractionListener mListener;
     private GamesNewsViewModel gamesNewsViewModel;
-    private String token;
+    private String token, user;
     private MyNewsRecyclerViewAdapter mAdapter;
-    private String category;
-    private SharedPreferences sp;
-    private String user;
 
 
-    public Game_GeneralFragment() {
+    public FavoriteFragment() {
     }
 
 
     @SuppressWarnings("unused")
-    public static Game_GeneralFragment newInstance(int columnCount, String token, String category) {
-        Game_GeneralFragment fragment = new Game_GeneralFragment();
+    public static FavoriteFragment newInstance(int columnCount, String token) {
+        FavoriteFragment fragment = new FavoriteFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         args.putString(TOKEN, token);
-        args.putString(CATEGORY, category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,7 +62,6 @@ public class Game_GeneralFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             token = getArguments().getString(TOKEN);
-            category = getArguments().getString(CATEGORY);
         }
     }
 
@@ -68,21 +70,21 @@ public class Game_GeneralFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
+        sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            gamesNewsViewModel.updateNewsByCategory(token, category);
-            final LiveData<List<New>> list = gamesNewsViewModel.getAllNewsByCategory(category);
-            sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
-
+            gamesNewsViewModel.updateNews(token);
             user = sp.getString(USER_ID, "");
+            final LiveData<List<New>> list = gamesNewsViewModel.getFavoriteNews();
+
             mAdapter = new MyNewsRecyclerViewAdapter(context) {
                 @Override
-                public void setAction(boolean isFavorite, String id_new) {
+                public void setAction(boolean isFavorite, String n_new) {
                     if (!isFavorite) {
-                        gamesNewsViewModel.addFavorite(token, user, id_new);
-                    } else gamesNewsViewModel.removeFavorite(token, user, id_new);
+                        gamesNewsViewModel.addFavorite(token, user, n_new);
+                    } else gamesNewsViewModel.removeFavorite(token, user, n_new);
                 }
             };
             list.observe(this, new Observer<List<New>>() {

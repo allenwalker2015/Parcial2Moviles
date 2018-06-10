@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.adapter.ImageLayout;
 import com.alphadev.gamesnews.adapter.MyImagesRecyclerViewAdapter;
-import com.alphadev.gamesnews.fragment.dummy.DummyContent.DummyItem;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
 import java.util.List;
@@ -116,18 +115,8 @@ public class Game_ImagesFragment extends Fragment {
         //mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+//        // TODO: Update argument type and name
+//        void onListFragmentInteraction(DummyItem item);
     }
 }

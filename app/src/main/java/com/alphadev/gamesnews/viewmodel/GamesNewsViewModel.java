@@ -33,6 +33,11 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return mRepository.getNewsByCategory(category);
     }
 
+    public LiveData<List<com.alphadev.gamesnews.room.model.New>> getFavoriteNews() {
+        return mRepository.getFavoriteNews();
+    }
+
+
     public LiveData<List<String>> getAllNewsImageByCategory(String category) {
         return mRepository.getNewsImageByCategory(category);
     }

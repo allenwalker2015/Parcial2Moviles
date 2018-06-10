@@ -8,10 +8,23 @@
     tools:context=".activities.PlayerDetailsActivity"
     tools:showIn="@layout/activity_player_details">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/NewsSubtitle" />
+
+        <TextView
+            android:id="@+id/biografia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/NewsTitle" />
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

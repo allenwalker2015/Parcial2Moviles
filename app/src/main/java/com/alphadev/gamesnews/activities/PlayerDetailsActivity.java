@@ -1,16 +1,21 @@
 package com.alphadev.gamesnews.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alphadev.gamesnews.R;
+import com.alphadev.gamesnews.room.model.Player;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 public class PlayerDetailsActivity extends AppCompatActivity {
-
+    private static final String PLAYER = "player";
+    Player player;
+    ImageView avatar;
+    TextView game, biografia;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,13 +23,21 @@ public class PlayerDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            player = (Player) b.getSerializable(PLAYER);
+            findViews();
+            Glide.with(this).load(player.getAvatar()).apply(RequestOptions.centerCropTransform()).into(avatar);
+            game.setText(player.getGame());
+            biografia.setText(player.getBiografia());
+            getSupportActionBar().setTitle(player.getName());
+        }
+    }
+
+    public void findViews() {
+        avatar = findViewById(R.id.avatar);
+        game = findViewById(R.id.game);
+        biografia = findViewById(R.id.biografia);
     }
 }

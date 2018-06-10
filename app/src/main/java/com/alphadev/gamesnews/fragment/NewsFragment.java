@@ -84,7 +84,7 @@ public class NewsFragment extends Fragment {
                 public void setAction(boolean isFavorite, String n_new) {
                     if (!isFavorite) {
                         gamesNewsViewModel.addFavorite(token, user, n_new);
-                    }
+                    } else gamesNewsViewModel.removeFavorite(token, user, n_new);
                 }
             };
             list.observe(this, new Observer<List<New>>() {

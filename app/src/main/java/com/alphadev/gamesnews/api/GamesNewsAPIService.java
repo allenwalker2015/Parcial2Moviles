@@ -61,14 +61,12 @@ public interface GamesNewsAPIService {
     //AGREGAR NOTICIA FAVORITA A UN USUARIO
     @POST("/users/{id}/fav")
     @FormUrlEncoded
-    //TODO: DEVUELVE ALGO DIFERENTE A LO QUE HE COLOCADO
     Call<NewNew> addUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
 
 
     //BORRAR UNA NOTICIA FAVORITA A UN USUARIO
     @DELETE("/users/{id}/fav")
     @FormUrlEncoded
-    //TODO: DEVUELVE ALGO DIFERENTE A LO QUE HE COLOCADO
     Call<MessageResult> deleteUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
 
     //******** ADMINISTRACION DE NOTICIAS ********//

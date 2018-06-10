@@ -10,18 +10,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
-import com.alphadev.gamesnews.fragment.Game_ImagesFragment.OnListFragmentInteractionListener;
-import com.alphadev.gamesnews.fragment.dummy.DummyContent.DummyItem;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyImagesRecyclerViewAdapter extends RecyclerView.Adapter<MyImagesRecyclerViewAdapter.ViewHolder> {
 
     private List<String> list;

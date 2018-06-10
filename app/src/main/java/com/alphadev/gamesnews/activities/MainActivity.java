@@ -22,6 +22,7 @@ import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.fragment.CategoryFragment;
+import com.alphadev.gamesnews.fragment.FavoriteFragment;
 import com.alphadev.gamesnews.fragment.NewsFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -126,6 +127,9 @@ public class MainActivity extends AppCompatActivity
             transaction.commit();
 
         } else if (id == R.id.nav_fav) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, FavoriteFragment.newInstance(2, token));
+            transaction.commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
