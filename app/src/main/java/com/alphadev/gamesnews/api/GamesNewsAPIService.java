@@ -15,6 +15,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -65,8 +66,8 @@ public interface GamesNewsAPIService {
 
 
     //BORRAR UNA NOTICIA FAVORITA A UN USUARIO
-    @DELETE("/users/{id}/fav")
     @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "/users/{id}/fav", hasBody = true)
     Call<MessageResult> deleteUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
 
     //******** ADMINISTRACION DE NOTICIAS ********//

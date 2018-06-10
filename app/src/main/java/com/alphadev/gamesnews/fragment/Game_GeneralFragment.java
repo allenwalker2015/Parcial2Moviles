@@ -14,6 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.adapter.MyNewsRecyclerViewAdapter;
@@ -35,6 +37,7 @@ public class Game_GeneralFragment extends Fragment {
     private String category;
     private SharedPreferences sp;
     private String user;
+    private LiveData<List<New>> list;
 
 
     public Game_GeneralFragment() {
@@ -73,7 +76,7 @@ public class Game_GeneralFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             gamesNewsViewModel.updateNewsByCategory(token, category);
-            final LiveData<List<New>> list = gamesNewsViewModel.getAllNewsByCategory(category);
+            list = gamesNewsViewModel.getAllNewsByCategory(category);
             sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
 
             user = sp.getString(USER_ID, "");
@@ -117,8 +120,12 @@ public class Game_GeneralFragment extends Fragment {
                         }
                     }
                 });
+                LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
+                recyclerView.setLayoutAnimation(animation);
                 recyclerView.setLayoutManager(mLayoutManager);
             }
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
+            recyclerView.setLayoutAnimation(animation);
             recyclerView.setAdapter(mAdapter);
         }
         return view;
@@ -139,7 +146,6 @@ public class Game_GeneralFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /**

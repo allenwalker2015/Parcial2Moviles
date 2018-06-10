@@ -78,7 +78,7 @@ public class Game_TopPlayersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_topplayers_list, container, false);
         gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
         final LiveData<List<Player>> list = gamesNewsViewModel.getPlayersByCategory(category);
-        if (gamesNewsViewModel.updateTopPlayersByCategory("Bearer " + token, category)) {
+        if (gamesNewsViewModel.updateTopPlayersByCategory(token, category)) {
             Toast.makeText(getContext(), "Se ha actualizado correctamente la lista de jugadores", Toast.LENGTH_SHORT).show();
         }
         // Set the adapter

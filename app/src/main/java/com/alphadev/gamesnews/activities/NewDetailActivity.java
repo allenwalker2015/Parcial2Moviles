@@ -62,6 +62,13 @@ public class NewDetailActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+                if (n.isFavorite()) {
+                    fab.setImageResource(android.R.drawable.star_big_on);
+                } else {
+                    fab.setImageResource(android.R.drawable.star_big_off);
+                }
+
             }
         }
 

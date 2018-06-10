@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.alphadev.gamesnews.R;
@@ -20,6 +22,7 @@ public class MyTopPlayersRecyclerViewAdapter extends RecyclerView.Adapter<MyTopP
     private static final String PLAYER = "player";
     private final Context context;
     private List<Player> list;
+    private int lastPosition = -1;
 
 
     public MyTopPlayersRecyclerViewAdapter(Context context) {
@@ -48,6 +51,7 @@ public class MyTopPlayersRecyclerViewAdapter extends RecyclerView.Adapter<MyTopP
                     context.startActivity(i);
                 }
             });
+            setAnimation(holder.itemView, position);
         }
     }
 
@@ -79,4 +83,14 @@ public class MyTopPlayersRecyclerViewAdapter extends RecyclerView.Adapter<MyTopP
             return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_up);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
+    }
+
 }

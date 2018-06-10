@@ -31,6 +31,7 @@ public class GamesNewsRepository {
     private final LiveData<List<com.alphadev.gamesnews.room.model.New>> mAllNews;
     private final LiveData<List<com.alphadev.gamesnews.room.model.New>> mAllFavoriteNews;
     private static FavoriteDao favoriteDao;
+    private final LiveData<List<String>> mNewsCategories;
     private GamesNewsAPIService service;
     private Application application;
     //    private FavoriteNewsDao favoriteNewsDao;
@@ -48,6 +49,7 @@ public class GamesNewsRepository {
         favoriteDao = db.favoriteDao();
         mAllNews = newDao.getAllNews();
         mAllFavoriteNews = newDao.getFavoritesNews();
+        mNewsCategories = newDao.getNewsCategory();
     }
 
 
@@ -57,6 +59,10 @@ public class GamesNewsRepository {
 
     public LiveData<List<com.alphadev.gamesnews.room.model.New>> getNewsByCategory(String category) {
         return newDao.getNewsByCategory(category);
+    }
+
+    public LiveData<List<String>> getNewsCategories() {
+        return newDao.getNewsCategory();
     }
 
     public LiveData<List<String>> getNewsImageByCategory(String category) {
@@ -202,9 +208,6 @@ public class GamesNewsRepository {
         }
         return false;
     }
-
-
-
 
     public boolean updatePlayersByCategory(String token, String category) {
         UpdatePlayersTaskByCategory task = new UpdatePlayersTaskByCategory();
@@ -383,7 +386,9 @@ public class GamesNewsRepository {
                 if (n != null) {
                     favoriteDao.delete(strings[2], strings[1]);
                     newDao.unsetFavorite(strings[2]);
+                    com.alphadev.gamesnews.room.model.New n_30 = newDao.getNewByID(strings[2]);
                     b = true;
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();

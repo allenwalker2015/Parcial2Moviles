@@ -122,4 +122,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_player_details">PlayerDetailsActivity</string>
+    <string name="logout">Logout</string>
 </resources>

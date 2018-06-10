@@ -57,7 +57,7 @@ public class CategoryFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_game, container, false);
         // Inflate the layout for this fragment
         viewPager = v.findViewById(R.id.viewPager);
-        SectionsPageAdapter adapter = new SectionsPageAdapter(getFragmentManager(), token, category, getContext());
+        SectionsPageAdapter adapter = new SectionsPageAdapter(getChildFragmentManager(), token, category, getContext());
         viewPager.setAdapter(adapter);
         TabLayout tabLayout = v.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);

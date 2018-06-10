@@ -42,6 +42,9 @@ public interface NewDao {
     @Query("SELECT coverImage from new WHERE game=:category ORDER BY created_date DESC ")
     LiveData<List<String>> getNewsImageByCategory(String category);
 
+    @Query("SELECT game from new GROUP BY game ORDER BY game DESC ")
+    LiveData<List<String>> getNewsCategory();
+
     @Query("UPDATE new SET favorite=1 WHERE _id=:id")
     void setFavorite(String id);
 

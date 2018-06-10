@@ -32,11 +32,11 @@ public class SectionsPageAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new Game_GeneralFragment().newInstance(2, token, category);
+                return Game_GeneralFragment.newInstance(2, token, category);
             case 1:
-                return new Game_TopPlayersFragment().newInstance(1, token, category);
+                return Game_TopPlayersFragment.newInstance(1, token, category);
             case 2:
-                return new Game_ImagesFragment().newInstance(3, token, category);
+                return Game_ImagesFragment.newInstance(3, token, category);
             default:
                 return null;
         }

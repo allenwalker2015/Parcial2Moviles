@@ -33,6 +33,9 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return mRepository.getNewsByCategory(category);
     }
 
+    public LiveData<List<String>> getNewsCategories() {
+        return mRepository.getNewsCategories();
+    }
     public LiveData<List<com.alphadev.gamesnews.room.model.New>> getFavoriteNews() {
         return mRepository.getFavoriteNews();
     }
@@ -65,4 +68,6 @@ public class GamesNewsViewModel extends AndroidViewModel {
     public boolean updateTopPlayersByCategory(String token, String category) {
         return mRepository.updatePlayersByCategory(token, category);
     }
+
+
 }

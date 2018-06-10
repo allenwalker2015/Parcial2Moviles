@@ -14,6 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.adapter.MyNewsRecyclerViewAdapter;
@@ -39,6 +41,7 @@ public class FavoriteFragment extends Fragment {
     private GamesNewsViewModel gamesNewsViewModel;
     private String token, user;
     private MyNewsRecyclerViewAdapter mAdapter;
+    private LiveData<List<New>> list;
 
 
     public FavoriteFragment() {
@@ -77,14 +80,16 @@ public class FavoriteFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
             gamesNewsViewModel.updateNews(token);
             user = sp.getString(USER_ID, "");
-            final LiveData<List<New>> list = gamesNewsViewModel.getFavoriteNews();
+            list = gamesNewsViewModel.getFavoriteNews();
 
             mAdapter = new MyNewsRecyclerViewAdapter(context) {
                 @Override
                 public void setAction(boolean isFavorite, String n_new) {
                     if (!isFavorite) {
                         gamesNewsViewModel.addFavorite(token, user, n_new);
-                    } else gamesNewsViewModel.removeFavorite(token, user, n_new);
+                    } else {
+                        gamesNewsViewModel.removeFavorite(token, user, n_new);
+                    }
                 }
             };
             list.observe(this, new Observer<List<New>>() {
@@ -121,6 +126,8 @@ public class FavoriteFragment extends Fragment {
                 });
                 recyclerView.setLayoutManager(mLayoutManager);
             }
+            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
+            recyclerView.setLayoutAnimation(animation);
             recyclerView.setAdapter(mAdapter);
         }
         return view;

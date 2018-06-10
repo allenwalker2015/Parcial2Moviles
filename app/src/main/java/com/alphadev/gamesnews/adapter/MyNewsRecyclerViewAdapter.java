@@ -23,7 +23,7 @@ import java.util.List;
 public abstract class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder> {
 
     private List<New> list;
-
+    //    private int lastPosition = -1;
     private Context context;
 
 
@@ -69,6 +69,7 @@ public abstract class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyN
 
                 }
             });
+//            setAnimation(holder.itemView, position);
         }
 
 
@@ -112,4 +113,15 @@ public abstract class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyN
         if(position==0) return 1;
         else return 0;
     }
+
+//    private void setAnimation(View viewToAnimate, int position)
+//    {
+//        // If the bound view wasn't previously displayed on screen, it's animated
+//        if (position > lastPosition)
+//        {
+//            Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_up);
+//            viewToAnimate.startAnimation(animation);
+//            lastPosition = position;
+//        }
+//    }
 }
