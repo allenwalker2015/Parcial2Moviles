@@ -59,6 +59,10 @@ public class GamesNewsRepository {
         return newDao.getNewsByCategory(category);
     }
 
+    public LiveData<List<String>> getNewsImageByCategory(String category) {
+        return newDao.getNewsImageByCategory(category);
+    }
+
     public LiveData<List<Player>> getPlayersByCategory(String category) {
         return playerDao.getPlayersByCategory(category);
     }
@@ -231,10 +235,12 @@ public class GamesNewsRepository {
                 list = service.getAllNews(strings[0]).execute().body();
                 if (list != null) {
                     newDao.deleteAll();
+                    List<String> listfav = favoriteDao.getAllNewsID();
                     for (New n : list) {
                         newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
                                 n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
-                                n.getDescription(),n.getCreatedDate(), false));
+                                n.getDescription(), n.getCreatedDate(), listfav.contains(n.getId())));
+
                         b = true;
                     }
                 }
@@ -261,10 +267,11 @@ public class GamesNewsRepository {
                 list = service.getNewsByCategory(strings[0], strings[1]).execute().body();
                 if (list != null) {
                     newDao.deleteByCategory(strings[1]);
+                    List<String> listfav = favoriteDao.getAllNewsID();
                     for (New n : list) {
                         newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
                                 n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
-                                n.getDescription(), n.getCreatedDate(), false));
+                                n.getDescription(), n.getCreatedDate(), listfav.contains(n.getId())));
                         b = true;
                     }
                 }
@@ -319,7 +326,7 @@ public class GamesNewsRepository {
             try {
                 list = service.getPlayersByCategory(strings[0], strings[1]).execute().body();
                 if (list != null) {
-                    newDao.deleteAll();
+                    playerDao.deleteAll();
                     for (com.alphadev.gamesnews.api.pojo.Player n : list) {
                         playerDao.insert(new com.alphadev.gamesnews.room.model.Player(
                                 n.getAvatar(), n.getId(), n.getName(), n.getBiografia(), n.getGame()));

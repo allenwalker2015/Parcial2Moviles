@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,12 +26,15 @@ import java.util.List;
 public class Game_GeneralFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count", TOKEN = "token", CATEGORY = "category";
+    private static final String USER_ID = "userId";
     private int mColumnCount = 1;
     private NewsFragment.OnListFragmentInteractionListener mListener;
     private GamesNewsViewModel gamesNewsViewModel;
     private String token;
     private MyNewsRecyclerViewAdapter mAdapter;
     private String category;
+    private SharedPreferences sp;
+    private String user;
 
 
     public Game_GeneralFragment() {
@@ -70,11 +74,15 @@ public class Game_GeneralFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
             gamesNewsViewModel.updateNewsByCategory(token, category);
             final LiveData<List<New>> list = gamesNewsViewModel.getAllNewsByCategory(category);
+            sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
 
+            user = sp.getString(USER_ID, "");
             mAdapter = new MyNewsRecyclerViewAdapter(context) {
                 @Override
                 public void setAction(boolean isFavorite, String id_new) {
-
+                    if (!isFavorite) {
+                        gamesNewsViewModel.addFavorite(token, user, id_new);
+                    }
                 }
             };
             list.observe(this, new Observer<List<New>>() {

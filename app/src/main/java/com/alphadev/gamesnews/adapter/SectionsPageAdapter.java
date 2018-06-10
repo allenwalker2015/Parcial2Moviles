@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.fragment.Game_GeneralFragment;
+import com.alphadev.gamesnews.fragment.Game_ImagesFragment;
 import com.alphadev.gamesnews.fragment.Game_TopPlayersFragment;
 
 
@@ -35,7 +36,7 @@ public class SectionsPageAdapter extends FragmentPagerAdapter {
             case 1:
                 return new Game_TopPlayersFragment().newInstance(1, token, category);
             case 2:
-                return new Game_TopPlayersFragment().newInstance(1, token, category);
+                return new Game_ImagesFragment().newInstance(3, token, category);
             default:
                 return null;
         }

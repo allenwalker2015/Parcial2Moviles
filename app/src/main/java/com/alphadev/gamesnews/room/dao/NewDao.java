@@ -33,11 +33,14 @@ public interface NewDao {
     @Query("SELECT * from new ORDER BY created_date DESC")
     LiveData<List<New>> getAllNews();
 
-    @Query("SELECT * FROM new WHERE favorite=1")
+    @Query("SELECT * FROM new WHERE favorite=1 ORDER BY created_date DESC")
     LiveData<List<New>> getFavoritesNews();
 
-    @Query("SELECT * from new WHERE game=:category")
+    @Query("SELECT * from new WHERE game=:category ORDER BY created_date DESC ")
     LiveData<List<New>> getNewsByCategory(String category);
+
+    @Query("SELECT coverImage from new WHERE game=:category ORDER BY created_date DESC ")
+    LiveData<List<String>> getNewsImageByCategory(String category);
 
     @Query("UPDATE new SET favorite=1 WHERE _id=:id")
     void setFavorite(String id);
