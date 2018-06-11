@@ -1,12 +1,12 @@
 package com.alphadev.gamesnews.api;
 
-import com.alphadev.gamesnews.api.pojo.MessageResult;
-import com.alphadev.gamesnews.api.pojo.New;
-import com.alphadev.gamesnews.api.pojo.NewNew;
-import com.alphadev.gamesnews.api.pojo.Player;
-import com.alphadev.gamesnews.api.pojo.Token;
-import com.alphadev.gamesnews.api.pojo.User;
-import com.alphadev.gamesnews.api.pojo.UserWithFavs;
+import com.alphadev.gamesnews.api.pojo.MessageResultPOJO;
+import com.alphadev.gamesnews.api.pojo.NewNewPOJO;
+import com.alphadev.gamesnews.api.pojo.NewPOJO;
+import com.alphadev.gamesnews.api.pojo.PlayerPOJO;
+import com.alphadev.gamesnews.api.pojo.TokenPOJO;
+import com.alphadev.gamesnews.api.pojo.UserPOJO;
+import com.alphadev.gamesnews.api.pojo.UserWithFavsPOJO;
 
 import java.util.List;
 
@@ -28,53 +28,53 @@ public interface GamesNewsAPIService {
     //LOGIN
     @POST("/login")
     @FormUrlEncoded
-    Call<Token> logIn(@Field("user") String user,
-                      @Field("password") String password);
+    Call<TokenPOJO> logIn(@Field("user") String user,
+                          @Field("password") String password);
 
     //OBTENER TODOS LOS USUARIOS
     @GET("/users")
-    Call<List<User>> getAllUsers(@Header("Authorization") String authHeader);
+    Call<List<UserPOJO>> getAllUsers(@Header("Authorization") String authHeader);
 
     //AGREGAR NUEVO USUARIO
     @POST("/users")
     @FormUrlEncoded
-    Call<User> addUser(@Header("Authorization") String authHeader, @Field("user") String user,
-                       @Field("avatar") String avatar, @Field("password") String password);
+    Call<UserPOJO> addUser(@Header("Authorization") String authHeader, @Field("user") String user,
+                           @Field("avatar") String avatar, @Field("password") String password);
 
     //ACTUALIZAR LA CONTRASEÑA DE UN USUARIO
     @PUT("/users/{id}")
     @FormUrlEncoded
-    Call<User> editUser(@Header("Authorization") String authHeader, @Path("id") String id, @Field("password") String password);
+    Call<UserPOJO> editUser(@Header("Authorization") String authHeader, @Path("id") String id, @Field("password") String password);
 
     //OBTENER UN USUARIO POR SU ID
     @GET("/users/{id}")
     @FormUrlEncoded
-    Call<UserWithFavs> getUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
+    Call<UserWithFavsPOJO> getUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
 
     //BORRAR USUARIO POR SU ID
     @DELETE("/users/{id}")
     @FormUrlEncoded
-    Call<User> deleteUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
+    Call<UserPOJO> deleteUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
 
     @GET("users/detail")
-    Call<UserWithFavs> getUserDetail(@Header("Authorization") String authHeader);
+    Call<UserWithFavsPOJO> getUserDetail(@Header("Authorization") String authHeader);
 
     //AGREGAR NOTICIA FAVORITA A UN USUARIO
     @POST("/users/{id}/fav")
     @FormUrlEncoded
-    Call<NewNew> addUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
+    Call<NewNewPOJO> addUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
 
 
     //BORRAR UNA NOTICIA FAVORITA A UN USUARIO
     @FormUrlEncoded
     @HTTP(method = "DELETE", path = "/users/{id}/fav", hasBody = true)
-    Call<MessageResult> deleteUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
+    Call<MessageResultPOJO> deleteUserFav(@Header("Authorization") String authHeader, @Path("id") String id, @Field("new") String n_new);
 
     //******** ADMINISTRACION DE NOTICIAS ********//
 
     //OBTENER TODAS LAS NOTICIAS
     @GET("/news")
-    Call<List<New>> getAllNews(@Header("Authorization") String authHeader);
+    Call<List<NewPOJO>> getAllNews(@Header("Authorization") String authHeader);
 
     //OBTENER TIPOS DE NOTICIAS
     @GET("/news/type/list")
@@ -82,23 +82,23 @@ public interface GamesNewsAPIService {
 
     //OBTENER NOTICIAS DE UN TIPO
     @GET("/news/type/{category}")
-    Call<List<New>> getNewsByCategory(@Header("Authorization") String authHeader, @Path("category") String category);
+    Call<List<NewPOJO>> getNewsByCategory(@Header("Authorization") String authHeader, @Path("category") String category);
 
     //AGREGAR NUEVA NOTICIA
     @POST("/news")
     @FormUrlEncoded
-    Call<New> addNew(@Header("Authorization") String authHeader, @Path("title") String title, @Path("description")
+    Call<NewPOJO> addNew(@Header("Authorization") String authHeader, @Path("title") String title, @Path("description")
             String description, @Path("coverImage") String coverImage, @Path("body") String body, @Path("game") String category);
 
     //OBTENER NOTICIA POR ID
     @GET("/news/{id}")
-    Call<New> getNewByID(@Header("Authorization") String authHeader, @Path("id") String id);
+    Call<NewPOJO> getNewByID(@Header("Authorization") String authHeader, @Path("id") String id);
 
     //******** ADMINISTRACION DE PLAYERS ********//
 
     //OBTENER TODOS LOS PLAYERS
     @GET("/players")
-    Call<List<Player>> getAllPlayers(@Header("Authorization") String authHeader);
+    Call<List<PlayerPOJO>> getAllPlayers(@Header("Authorization") String authHeader);
 
     //OBTENER LISTA DE JUEGOS DE LOS PLAYERS
     @GET("/players/type/list")
@@ -106,11 +106,11 @@ public interface GamesNewsAPIService {
 
     //AGREGAR NUEVO PLAYER
     @GET("/players/type/{game}")
-    Call<List<Player>> getPlayersByCategory(@Header("Authorization") String authHeader, @Path("game") String category);
+    Call<List<PlayerPOJO>> getPlayersByCategory(@Header("Authorization") String authHeader, @Path("game") String category);
 
     //OBTENER JUGADOR POR ID
     @GET("/players/{id}")
-    Call<Player> getPlayerByID(@Header("Authorization") String authHeader,@Path("id") String id);
+    Call<PlayerPOJO> getPlayerByID(@Header("Authorization") String authHeader, @Path("id") String id);
 
 }
 

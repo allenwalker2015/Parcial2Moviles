@@ -3,7 +3,7 @@ package com.alphadev.gamesnews.api.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MessageResult {
+public class MessageResultPOJO {
 
     @SerializedName("message")
     @Expose

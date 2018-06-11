@@ -5,9 +5,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.adapter.MyNewsRecyclerViewAdapter;
@@ -30,7 +33,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
     private static final String ARG_COLUMN_COUNT = "column-count", TOKEN = "token";
@@ -42,6 +45,7 @@ public class NewsFragment extends Fragment {
     private String token, user;
     private MyNewsRecyclerViewAdapter mAdapter;
     private LiveData<List<New>> list;
+    SwipeRefreshLayout mySwipeRefreshLayout;
 
 
     public NewsFragment() {
@@ -49,7 +53,7 @@ public class NewsFragment extends Fragment {
 
 
     @SuppressWarnings("unused")
-    public static NewsFragment newInstance(int columnCount,String token) {
+    public static NewsFragment newInstance(int columnCount, String token) {
         NewsFragment fragment = new NewsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
@@ -72,31 +76,37 @@ public class NewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-        gamesNewsViewModel =  ViewModelProviders.of(this).get(GamesNewsViewModel.class);
+        gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
         sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            gamesNewsViewModel.updateNews(token);
-            user = sp.getString(USER_ID, "");
-            list = gamesNewsViewModel.getAllNews();
 
-            mAdapter = new MyNewsRecyclerViewAdapter(context) {
-                @Override
-                public void setAction(boolean isFavorite, String n_new) {
-                    if (!isFavorite) {
-                        gamesNewsViewModel.addFavorite(token, user, n_new);
-                    } else gamesNewsViewModel.removeFavorite(token, user, n_new);
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mySwipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        mySwipeRefreshLayout.setOnRefreshListener(this);
+        doInBackGroundTask task = new doInBackGroundTask();
+        task.execute();
+        user = sp.getString(USER_ID, "");
+        list = gamesNewsViewModel.getAllNews();
+
+        mAdapter = new MyNewsRecyclerViewAdapter(context) {
+            @Override
+            public void setAction(boolean isFavorite, String n_new) {
+                if (!isFavorite) {
+                    if (!gamesNewsViewModel.addFavorite(token, user, n_new)) {
+                        Toast.makeText(getContext(), R.string.mensaje_error, Toast.LENGTH_SHORT).show();
+                    }
+                } else if (!gamesNewsViewModel.removeFavorite(token, user, n_new)) {
+                    Toast.makeText(getContext(), R.string.mensaje_error, Toast.LENGTH_SHORT).show();
                 }
-            };
-            list.observe(this, new Observer<List<New>>() {
-                @Override
-                public void onChanged(@Nullable List<New> news) {
-                    mAdapter.setList(news);
-                    mAdapter.notifyDataSetChanged();
-                }
-            });
+            }
+        };
+        list.observe(this, new Observer<List<New>>() {
+            @Override
+            public void onChanged(@Nullable List<New> news) {
+                mAdapter.setList(news);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
 
 //            AsyncTask<Void,Void,Void> task = new AsyncTask<Void, Void, Void>() {
 //                @Override
@@ -107,27 +117,27 @@ public class NewsFragment extends Fragment {
 //            };
 //            task.execute();
 
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                GridLayoutManager mLayoutManager = new GridLayoutManager(context, mColumnCount);
-                mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                    @Override
-                    public int getSpanSize(int position) {
-                        switch(mAdapter.getItemViewType(position)){
-                            case 1:
-                                return 2;
-                            default:
-                                return 1;
-                        }
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            GridLayoutManager mLayoutManager = new GridLayoutManager(context, mColumnCount);
+            mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    switch (mAdapter.getItemViewType(position)) {
+                        case 1:
+                            return 2;
+                        default:
+                            return 1;
                     }
-                });
-                recyclerView.setLayoutManager(mLayoutManager);
-            }
-            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
-            recyclerView.setLayoutAnimation(animation);
-            recyclerView.setAdapter(mAdapter);
+                }
+            });
+            recyclerView.setLayoutManager(mLayoutManager);
         }
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
+        recyclerView.setLayoutAnimation(animation);
+        recyclerView.setAdapter(mAdapter);
+
         return view;
     }
 
@@ -149,6 +159,12 @@ public class NewsFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onRefresh() {
+        boolean _return = gamesNewsViewModel.updateNews(token);
+        mySwipeRefreshLayout.setRefreshing(!_return && _return);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -161,6 +177,15 @@ public class NewsFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-       // void onListFragmentInteraction(DummyItem item);
+        // void onListFragmentInteraction(DummyItem item);
+    }
+
+    private class doInBackGroundTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            gamesNewsViewModel.updateNews(token);
+            return null;
+        }
     }
 }

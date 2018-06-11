@@ -21,5 +21,4 @@ public interface FavoriteDao {
 
     @Query("DELETE FROM favorite where idnew=:idnew and iduser=:iduser")
     void delete(String idnew, String iduser);
-
 }

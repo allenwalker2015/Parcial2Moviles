@@ -5,16 +5,20 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class UserWithFavs {
+public class UserPOJO {
+
     @SerializedName("favoriteNews")
     @Expose
-    private List<FavoriteNew> favoriteNews = null;
+    private List<String> News = null;
     @SerializedName("_id")
     @Expose
     private String id;
     @SerializedName("user")
     @Expose
     private String user;
+    @SerializedName("avatar")
+    @Expose
+    private String avatar;
     @SerializedName("password")
     @Expose
     private String password;
@@ -25,12 +29,12 @@ public class UserWithFavs {
     @Expose
     private Integer v;
 
-    public List<FavoriteNew> getFavoriteNews() {
-        return favoriteNews;
+    public List<String> getNews() {
+        return News;
     }
 
-    public void setFavoriteNews(List<FavoriteNew> favoriteNews) {
-        this.favoriteNews = favoriteNews;
+    public void setNews(List<String> News) {
+        this.News = News;
     }
 
     public String getId() {
@@ -47,6 +51,14 @@ public class UserWithFavs {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getPassword() {
@@ -75,7 +87,7 @@ public class UserWithFavs {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("\nfavoriteNews:" + favoriteNews).append("\n").append("id:" + id).append("\n").append("user:" + user).append("\n").append("\n").append("password:" + password).append("\n").append("createdDate:" + createdDate).append("\n").append("v:" + v).append("\n").toString();
+        return new StringBuilder().append("\nfavoriteNews:"+ News).append("\n").append("id:"+ id).append("\n").append("user:"+ user).append("\n").append("avatar:"+ avatar).append("\n").append("password:"+ password).append("\n").append("createdDate:"+ createdDate).append("\n").append("v:"+ v).append("\n").toString();
     }
 
 }

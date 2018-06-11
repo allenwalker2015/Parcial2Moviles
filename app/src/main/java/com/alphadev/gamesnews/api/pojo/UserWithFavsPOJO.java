@@ -1,24 +1,20 @@
 package com.alphadev.gamesnews.api.pojo;
 
-import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+import java.util.List;
 
+public class UserWithFavsPOJO {
     @SerializedName("favoriteNews")
     @Expose
-    private List<String> News = null;
+    private List<FavoriteNewPOJO> favoriteNews = null;
     @SerializedName("_id")
     @Expose
     private String id;
     @SerializedName("user")
     @Expose
     private String user;
-    @SerializedName("avatar")
-    @Expose
-    private String avatar;
     @SerializedName("password")
     @Expose
     private String password;
@@ -29,12 +25,12 @@ public class User {
     @Expose
     private Integer v;
 
-    public List<String> getNews() {
-        return News;
+    public List<FavoriteNewPOJO> getFavoriteNews() {
+        return favoriteNews;
     }
 
-    public void setNews(List<String> News) {
-        this.News = News;
+    public void setFavoriteNews(List<FavoriteNewPOJO> favoriteNews) {
+        this.favoriteNews = favoriteNews;
     }
 
     public String getId() {
@@ -51,14 +47,6 @@ public class User {
 
     public void setUser(String user) {
         this.user = user;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public String getPassword() {
@@ -87,7 +75,7 @@ public class User {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("\nfavoriteNews:"+ News).append("\n").append("id:"+ id).append("\n").append("user:"+ user).append("\n").append("avatar:"+ avatar).append("\n").append("password:"+ password).append("\n").append("createdDate:"+ createdDate).append("\n").append("v:"+ v).append("\n").toString();
+        return new StringBuilder().append("\nfavoriteNews:" + favoriteNews).append("\n").append("id:" + id).append("\n").append("user:" + user).append("\n").append("\n").append("password:" + password).append("\n").append("createdDate:" + createdDate).append("\n").append("v:" + v).append("\n").toString();
     }
 
 }

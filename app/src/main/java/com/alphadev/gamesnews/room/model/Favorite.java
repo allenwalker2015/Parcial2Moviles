@@ -18,7 +18,6 @@ public class Favorite implements Serializable {
     @ColumnInfo(name = "iduser")
     private String iduser;
     @ColumnInfo(name = "idnew")
-
     private String idnew;
 
 

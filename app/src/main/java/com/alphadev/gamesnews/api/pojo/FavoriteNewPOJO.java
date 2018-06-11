@@ -1,8 +1,9 @@
 package com.alphadev.gamesnews.api.pojo;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class New {
+public class FavoriteNewPOJO {
 
     @SerializedName("_id")
     @Expose
@@ -16,12 +17,6 @@ public class New {
     @SerializedName("game")
     @Expose
     private String game;
-    @SerializedName("coverImage")
-    @Expose
-    private String coverImage;
-    @SerializedName("description")
-    @Expose
-    private String description;
     @SerializedName("created_date")
     @Expose
     private String createdDate;
@@ -61,22 +56,6 @@ public class New {
         this.game = game;
     }
 
-    public String getCoverImage() {
-        return coverImage;
-    }
-
-    public void setCoverImage(String coverImage) {
-        this.coverImage = coverImage;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getCreatedDate() {
         return createdDate;
     }
@@ -92,5 +71,4 @@ public class New {
     public void setV(Integer v) {
         this.v = v;
     }
-
 }

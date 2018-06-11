@@ -1,16 +1,15 @@
 package com.alphadev.gamesnews.api.pojo;
 
-import com.alphadev.gamesnews.api.pojo.New;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class NewNew {
+public class NewNewPOJO {
     @SerializedName("success")
     @Expose
     private String success;
     @SerializedName("add")
     @Expose
-    private New add;
+    private NewPOJO add;
 
     public String getSuccess() {
         return success;
@@ -20,11 +19,11 @@ public class NewNew {
         this.success = success;
     }
 
-    public New getAdd() {
+    public NewPOJO getAdd() {
         return add;
     }
 
-    public void setAdd(New add) {
+    public void setAdd(NewPOJO add) {
         this.add = add;
     }
 

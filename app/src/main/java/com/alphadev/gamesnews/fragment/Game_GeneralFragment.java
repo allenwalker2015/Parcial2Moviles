@@ -5,9 +5,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.adapter.MyNewsRecyclerViewAdapter;
@@ -25,7 +28,7 @@ import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 import java.util.List;
 
 
-public class Game_GeneralFragment extends Fragment {
+public class Game_GeneralFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ARG_COLUMN_COUNT = "column-count", TOKEN = "token", CATEGORY = "category";
     private static final String USER_ID = "userId";
@@ -38,7 +41,7 @@ public class Game_GeneralFragment extends Fragment {
     private SharedPreferences sp;
     private String user;
     private LiveData<List<New>> list;
-
+    SwipeRefreshLayout mySwipeRefreshLayout;
 
     public Game_GeneralFragment() {
     }
@@ -71,63 +74,60 @@ public class Game_GeneralFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            gamesNewsViewModel.updateNewsByCategory(token, category);
-            list = gamesNewsViewModel.getAllNewsByCategory(category);
-            sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
 
-            user = sp.getString(USER_ID, "");
-            mAdapter = new MyNewsRecyclerViewAdapter(context) {
-                @Override
-                public void setAction(boolean isFavorite, String id_new) {
-                    if (!isFavorite) {
-                        gamesNewsViewModel.addFavorite(token, user, id_new);
-                    } else gamesNewsViewModel.removeFavorite(token, user, id_new);
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mySwipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        mySwipeRefreshLayout.setOnRefreshListener(this);
+        doInBackGroundTask task = new doInBackGroundTask();
+        task.execute();
+        list = gamesNewsViewModel.getAllNewsByCategory(category);
+        sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
+
+        user = sp.getString(USER_ID, "");
+        mAdapter = new MyNewsRecyclerViewAdapter(context) {
+            @Override
+            public void setAction(boolean isFavorite, String id_new) {
+                if (!isFavorite) {
+                    if (!gamesNewsViewModel.addFavorite(token, user, id_new)) {
+                        Toast.makeText(getContext(), R.string.mensaje_error, Toast.LENGTH_SHORT).show();
+                    }
+                } else if (!gamesNewsViewModel.removeFavorite(token, user, id_new)) {
+                    Toast.makeText(getContext(), R.string.mensaje_error, Toast.LENGTH_SHORT).show();
                 }
-            };
-            list.observe(this, new Observer<List<New>>() {
+            }
+        };
+        list.observe(this, new Observer<List<New>>() {
+            @Override
+            public void onChanged(@Nullable List<New> news) {
+                mAdapter.setList(news);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            GridLayoutManager mLayoutManager = new GridLayoutManager(context, mColumnCount);
+            mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
-                public void onChanged(@Nullable List<New> news) {
-                    mAdapter.setList(news);
-                    mAdapter.notifyDataSetChanged();
+                public int getSpanSize(int position) {
+                    switch (mAdapter.getItemViewType(position)) {
+                        case 1:
+                            return 2;
+                        default:
+                            return 1;
+                    }
                 }
             });
-
-//            AsyncTask<Void,Void,Void> task = new AsyncTask<Void, Void, Void>() {
-//                @Override
-//                protected Void doInBackground(Void... voids) {
-//                    mAdapter.setList(list.getValue());
-//                    return null;
-//                }
-//            };
-//            task.execute();
-
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                GridLayoutManager mLayoutManager = new GridLayoutManager(context, mColumnCount);
-                mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                    @Override
-                    public int getSpanSize(int position) {
-                        switch (mAdapter.getItemViewType(position)) {
-                            case 1:
-                                return 2;
-                            default:
-                                return 1;
-                        }
-                    }
-                });
-                LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
-                recyclerView.setLayoutAnimation(animation);
-                recyclerView.setLayoutManager(mLayoutManager);
-            }
             LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
             recyclerView.setLayoutAnimation(animation);
-            recyclerView.setAdapter(mAdapter);
+            recyclerView.setLayoutManager(mLayoutManager);
         }
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
+        recyclerView.setLayoutAnimation(animation);
+        recyclerView.setAdapter(mAdapter);
+
         return view;
     }
 
@@ -135,12 +135,6 @@ public class Game_GeneralFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnListFragmentInteractionListener) {
-//            mListener = (OnListFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnListFragmentInteractionListener");
-//        }
     }
 
     @Override
@@ -148,18 +142,24 @@ public class Game_GeneralFragment extends Fragment {
         super.onDetach();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onRefresh() {
+
+        boolean _return = gamesNewsViewModel.updateNewsByCategory(token, category);
+        mySwipeRefreshLayout.setRefreshing(!_return && _return);
+    }
+
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         // void onListFragmentInteraction(DummyItem item);
+    }
+
+    private class doInBackGroundTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            gamesNewsViewModel.updateNewsByCategory(token, category);
+            return null;
+        }
     }
 }

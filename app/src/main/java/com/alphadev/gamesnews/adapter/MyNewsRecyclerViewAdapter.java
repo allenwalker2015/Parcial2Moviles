@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.activities.NewDetailActivity;
@@ -62,8 +61,7 @@ public abstract class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyN
             holder.star.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Aqui ira la logica de gurdar favorito.
-                    Toast.makeText(context, "Haz hecho click en favoritos", Toast.LENGTH_SHORT).show();
+
                     setAction(list.get(position).isFavorite(), list.get(position).getId());
 
 

@@ -18,12 +18,9 @@ import com.alphadev.gamesnews.room.model.User;
 @Database(entities = {New.class, Player.class, User.class, Favorite.class}, version = 1)
 public abstract class GamesNewsDataBase extends RoomDatabase {
 
-
-//    public abstract FavoriteNewsDao favoriteNewsDao();
     public abstract NewDao newDao();
     public  abstract PlayerDao playerDao();
     public  abstract UserDao userDao();
-
     public abstract FavoriteDao favoriteDao();
     private static GamesNewsDataBase INSTANCE;
 

@@ -34,8 +34,8 @@ import android.widget.TextView;
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
-import com.alphadev.gamesnews.api.pojo.Token;
-import com.alphadev.gamesnews.api.pojo.UserWithFavs;
+import com.alphadev.gamesnews.api.pojo.TokenPOJO;
+import com.alphadev.gamesnews.api.pojo.UserWithFavsPOJO;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
 import java.io.IOException;
@@ -328,10 +328,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                Token token;
+                TokenPOJO token;
                 token = null;
                 boolean isUserUpdated = false;
-                UserWithFavs user = null;
+                UserWithFavsPOJO user = null;
                 try {
                     token = service.logIn(mEmail, mPassword).execute().body();
 

@@ -37,8 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
     GamesNewsAPIService service;
     private GamesNewsViewModel gamesNewsViewModel;
     SharedPreferences sp;
@@ -74,7 +73,6 @@ public class MainActivity extends AppCompatActivity
         expandableListView = findViewById(R.id.expandableListView);
         prepareMenuData();
         populateExpandableList();
-        navigationView.setNavigationItemSelectedListener(this);
         token = sp.getString("token", "");
         if (token.equals("")) {
             Intent i = new Intent(this, LoginActivity.class);
@@ -119,34 +117,6 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_news) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, NewsFragment.newInstance(2, "Bearer " + token));
-            transaction.commit();
-        } else if (id == R.id.nav_games) {
-
-        } else if (id == R.id.nav_settings) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, CategoryFragment.newInstance("Bearer " + token, "lol"));
-            transaction.commit();
-
-        } else if (id == R.id.nav_fav) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, FavoriteFragment.newInstance(2, "Bearer " + token));
-            transaction.commit();
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
 
     //Function to add any menu option and submenu entries on a expandable list
     private void prepareMenuData() {
@@ -226,10 +196,10 @@ public class MainActivity extends AppCompatActivity
                             transaction.replace(R.id.fragment_container, fragment).commit();
                         }
                         if (headerList.get(groupPosition).menuName.equals(logout_title)) {
-//                            SharedPreferences sp = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-//                            sp.edit().putString("token", "").apply();
-//                            fragment = new Start();
-//                            transaction.replace(R.id.drawer_layout, fragment).commit();
+                            sp.edit().remove("token").apply();
+                            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                            startActivity(i);
+                            finish();
                         }
 
 

@@ -51,7 +51,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView txtListChild = convertView
-                .findViewById(R.id.lblListItem);
+                .findViewById(R.id.label_item);
 
         txtListChild.setText(childText);
         return convertView;
@@ -93,7 +93,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_group_header, null);
         }
 
-        TextView lblListHeader = convertView.findViewById(R.id.lblListHeader);
+        TextView lblListHeader = convertView.findViewById(R.id.label_item);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 

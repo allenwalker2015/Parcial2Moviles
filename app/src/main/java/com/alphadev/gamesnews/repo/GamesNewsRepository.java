@@ -7,10 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
-import com.alphadev.gamesnews.api.GamesNewsAPIService;
-import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.room.GamesNewsDataBase;
-import com.alphadev.gamesnews.room.dao.FavoriteDao;
 import com.alphadev.gamesnews.room.dao.NewDao;
 import com.alphadev.gamesnews.room.dao.PlayerDao;
 import com.alphadev.gamesnews.room.dao.UserDao;
@@ -23,9 +20,9 @@ import java.util.concurrent.ExecutionException;
 public class GamesNewsRepository {
     private final LiveData<List<com.alphadev.gamesnews.room.model.New>> mAllNews;
     private final LiveData<List<com.alphadev.gamesnews.room.model.New>> mAllFavoriteNews;
-    private static FavoriteDao favoriteDao;
-    private final LiveData<List<String>> mNewsCategories;
-    private GamesNewsAPIService service;
+    //    private static FavoriteDao favoriteDao;
+//    private final LiveData<List<String>> mNewsCategories;
+//    private GamesNewsAPIService service;
     private Application application;
     //    private FavoriteNewsDao favoriteNewsDao;
     private static NewDao newDao;
@@ -38,11 +35,11 @@ public class GamesNewsRepository {
         newDao = db.newDao();
         playerDao = db.playerDao();
         userDao = db.userDao();
-        service = GamesNewsAPIUtils.getAPIService();
-        favoriteDao = db.favoriteDao();
+//        service = GamesNewsAPIUtils.getAPIService();
+//        favoriteDao = db.favoriteDao();
         mAllNews = newDao.getAllNews();
         mAllFavoriteNews = newDao.getFavoritesNews();
-        mNewsCategories = newDao.getNewsCategory();
+//        mNewsCategories = newDao.getNewsCategory();
     }
 
 

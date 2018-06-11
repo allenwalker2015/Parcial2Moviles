@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.room.model.New;
@@ -57,12 +58,14 @@ public class NewDetailActivity extends AppCompatActivity {
                             if (gamesNewsViewModel.addFavorite("Bearer " + token, user, n.getId())) {
                                 n.setFavorite(true);
                                 fab.setImageResource(android.R.drawable.star_big_on);
-                            }
+                            } else
+                                Toast.makeText(NewDetailActivity.this, R.string.mensaje_error, Toast.LENGTH_SHORT).show();
                         } else {
                             if (gamesNewsViewModel.removeFavorite("Bearer " + token, user, n.getId())) {
                                 fab.setImageResource(android.R.drawable.star_big_off);
                                 n.setFavorite(false);
-                            }
+                            } else
+                                Toast.makeText(NewDetailActivity.this, R.string.mensaje_error, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

@@ -5,11 +5,12 @@ import android.os.AsyncTask;
 
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
-import com.alphadev.gamesnews.api.pojo.FavoriteNew;
-import com.alphadev.gamesnews.api.pojo.MessageResult;
-import com.alphadev.gamesnews.api.pojo.New;
-import com.alphadev.gamesnews.api.pojo.NewNew;
-import com.alphadev.gamesnews.api.pojo.UserWithFavs;
+import com.alphadev.gamesnews.api.pojo.FavoriteNewPOJO;
+import com.alphadev.gamesnews.api.pojo.MessageResultPOJO;
+import com.alphadev.gamesnews.api.pojo.NewNewPOJO;
+import com.alphadev.gamesnews.api.pojo.NewPOJO;
+import com.alphadev.gamesnews.api.pojo.PlayerPOJO;
+import com.alphadev.gamesnews.api.pojo.UserWithFavsPOJO;
 import com.alphadev.gamesnews.room.GamesNewsDataBase;
 import com.alphadev.gamesnews.room.dao.FavoriteDao;
 import com.alphadev.gamesnews.room.dao.NewDao;
@@ -44,7 +45,7 @@ public class GamesNewsPoblationRepository {
     //Esta la cree porque si ejecutas una AsyncTask dentro de otra AsyncTask se loopea y nunca termina.
     // que es el caso de cuando compruebo las credenciales del usuario. en la actividad del login
     public boolean updateUserInfoNoAsync(String token) {
-        UserWithFavs user;
+        UserWithFavsPOJO user;
         boolean b = false;
         try {
             user = service.getUserDetail(token).execute().body();
@@ -52,7 +53,7 @@ public class GamesNewsPoblationRepository {
                 userDao.deleteAll();
                 favoriteDao.deleteAll();
                 userDao.insert(new User(user.getId(), user.getUser(), ""));
-                for (FavoriteNew n : user.getFavoriteNews()) {
+                for (FavoriteNewPOJO n : user.getFavoriteNews()) {
                     favoriteDao.insert(new Favorite(n.getId(), user.getId()));
                 }
                 b = true;
@@ -89,13 +90,13 @@ public class GamesNewsPoblationRepository {
         protected Boolean doInBackground(String... strings) {
             boolean b = false;
 
-            List<New> list;
+            List<NewPOJO> list;
             try {
                 list = service.getAllNews(strings[0]).execute().body();
                 if (list != null) {
                     newDao.deleteAll();
                     List<String> listfav = favoriteDao.getAllNewsID();
-                    for (New n : list) {
+                    for (NewPOJO n : list) {
                         newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
                                 n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
                                 n.getDescription(), n.getCreatedDate(), listfav.contains(n.getId())));
@@ -135,13 +136,13 @@ public class GamesNewsPoblationRepository {
         protected Boolean doInBackground(String... strings) {
             boolean b = false;
 
-            List<New> list;
+            List<NewPOJO> list;
             try {
                 list = service.getNewsByCategory(strings[0], strings[1]).execute().body();
                 if (list != null) {
                     newDao.deleteByCategory(strings[1]);
                     List<String> listfav = favoriteDao.getAllNewsID();
-                    for (New n : list) {
+                    for (NewPOJO n : list) {
                         newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
                                 n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
                                 n.getDescription(), n.getCreatedDate(), listfav.contains(n.getId())));
@@ -180,14 +181,14 @@ public class GamesNewsPoblationRepository {
         protected Boolean doInBackground(String... strings) {
             boolean b = false;
 
-            UserWithFavs user;
+            UserWithFavsPOJO user;
             try {
                 user = service.getUserDetail(strings[0]).execute().body();
                 if (user != null) {
                     userDao.deleteAll();
                     favoriteDao.deleteAll();
                     userDao.insert(new User(user.getId(), user.getUser(), ""));
-                    for (FavoriteNew n : user.getFavoriteNews()) {
+                    for (FavoriteNewPOJO n : user.getFavoriteNews()) {
                         favoriteDao.insert(new Favorite(n.getId(), user.getId()));
                     }
                 }
@@ -223,12 +224,12 @@ public class GamesNewsPoblationRepository {
         protected Boolean doInBackground(String... strings) {
             boolean b = false;
 
-            List<com.alphadev.gamesnews.api.pojo.Player> list;
+            List<PlayerPOJO> list;
             try {
                 list = service.getPlayersByCategory(strings[0], strings[1]).execute().body();
                 if (list != null) {
                     playerDao.deleteAll();
-                    for (com.alphadev.gamesnews.api.pojo.Player n : list) {
+                    for (PlayerPOJO n : list) {
                         playerDao.insert(new Player(
                                 n.getAvatar(), n.getId(), n.getName(), n.getBiografia(), n.getGame()));
                         b = true;
@@ -265,7 +266,7 @@ public class GamesNewsPoblationRepository {
         @Override
         protected Boolean doInBackground(String... strings) {
             boolean b = false;
-            NewNew n;
+            NewNewPOJO n;
 
             try {
                 n = service.addUserFav(strings[0], strings[1], strings[2]).execute().body();
@@ -305,7 +306,7 @@ public class GamesNewsPoblationRepository {
         @Override
         protected Boolean doInBackground(String... strings) {
             boolean b = false;
-            MessageResult n;
+            MessageResultPOJO n;
 
             try {
                 n = service.deleteUserFav(strings[0], strings[1], strings[2]).execute().body();

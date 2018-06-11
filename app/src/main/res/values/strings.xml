@@ -123,4 +123,5 @@
     </string>
     <string name="title_activity_player_details">PlayerDetailsActivity</string>
     <string name="logout">Logout</string>
+    <string name="mensaje_error">Ha ocurrido un error, verifica tu conexion a internet</string>
 </resources>
