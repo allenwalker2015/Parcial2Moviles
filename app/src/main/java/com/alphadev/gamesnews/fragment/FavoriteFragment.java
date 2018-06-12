@@ -161,8 +161,9 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        boolean _return = gamesNewsViewModel.updateNews(token);
-        mySwipeRefreshLayout.setRefreshing(!_return && _return);
+        doInBackGroundTask task = new doInBackGroundTask();
+        task.execute();
+
     }
 
     /**
@@ -180,12 +181,18 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
         // void onListFragmentInteraction(DummyItem item);
     }
 
-    private class doInBackGroundTask extends AsyncTask<Void, Void, Boolean> {
+    private class doInBackGroundTask extends AsyncTask<Void, Void, Integer> {
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
+        protected Integer doInBackground(Void... voids) {
 
             return gamesNewsViewModel.updateNews(token);
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            mySwipeRefreshLayout.setRefreshing(false);
+            super.onPostExecute(integer);
         }
     }
 }

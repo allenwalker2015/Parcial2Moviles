@@ -4,16 +4,17 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.adapter.MyTopPlayersRecyclerViewAdapter;
@@ -28,7 +29,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class Game_TopPlayersFragment extends Fragment {
+public class Game_TopPlayersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -38,6 +39,7 @@ public class Game_TopPlayersFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private GamesNewsViewModel gamesNewsViewModel;
+    SwipeRefreshLayout mySwipeRefreshLayout;
     private MyTopPlayersRecyclerViewAdapter mAdapter;
     private String token;
     private String category;
@@ -75,16 +77,18 @@ public class Game_TopPlayersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_topplayers_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
         final LiveData<List<Player>> list = gamesNewsViewModel.getPlayersByCategory(category);
-        if (gamesNewsViewModel.updateTopPlayersByCategory(token, category)) {
-            Toast.makeText(getContext(), "Se ha actualizado correctamente la lista de jugadores", Toast.LENGTH_SHORT).show();
-        }
         // Set the adapter
-        if (view instanceof RecyclerView) {
+
+        doInBackGroundTask task = new doInBackGroundTask();
+        task.execute();
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        mySwipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        mySwipeRefreshLayout.setOnRefreshListener(this);
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -92,7 +96,7 @@ public class Game_TopPlayersFragment extends Fragment {
             }
             mAdapter = new MyTopPlayersRecyclerViewAdapter(getContext());
             recyclerView.setAdapter(mAdapter);
-        }
+
 
         list.observe(this, new Observer<List<Player>>() {
             @Override
@@ -131,8 +135,29 @@ public class Game_TopPlayersFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onRefresh() {
+        doInBackGroundTask task = new doInBackGroundTask();
+        task.execute();
+    }
+
     public interface OnListFragmentInteractionListener {
 //        // TODO: Update argument type and name
 //        void onListFragmentInteraction(DummyItem item);
+    }
+
+
+    private class doInBackGroundTask extends AsyncTask<Void, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            return gamesNewsViewModel.updateTopPlayersByCategory(token, category);
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            mySwipeRefreshLayout.setRefreshing(false);
+            super.onPostExecute(integer);
+        }
     }
 }

@@ -52,7 +52,7 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return mRepository.getPlayersByCategory(category);
     }
 
-    public boolean updateNews(String token){
+    public int updateNews(String token) {
         return gamesNewsPoblationRepository.updateNews(token);
     }
 
@@ -64,11 +64,11 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return gamesNewsPoblationRepository.updateUserInfoNoAsync(token);
     }
 
-    public boolean updateNewsByCategory(String token, String category) {
-        return gamesNewsPoblationRepository.updateNews(token);
+    public int updateNewsByCategory(String token, String category) {
+        return gamesNewsPoblationRepository.updateNewsByCategory(token, category);
     }
 
-    public boolean updateTopPlayersByCategory(String token, String category) {
+    public int updateTopPlayersByCategory(String token, String category) {
         return gamesNewsPoblationRepository.updatePlayersByCategory(token, category);
     }
 

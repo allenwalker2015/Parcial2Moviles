@@ -35,11 +35,8 @@ public class GamesNewsRepository {
         newDao = db.newDao();
         playerDao = db.playerDao();
         userDao = db.userDao();
-//        service = GamesNewsAPIUtils.getAPIService();
-//        favoriteDao = db.favoriteDao();
         mAllNews = newDao.getAllNews();
         mAllFavoriteNews = newDao.getFavoritesNews();
-//        mNewsCategories = newDao.getNewsCategory();
     }
 
 

@@ -9,11 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.activities.PlayerDetailsActivity;
 import com.alphadev.gamesnews.room.model.Player;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -51,6 +54,7 @@ public class MyTopPlayersRecyclerViewAdapter extends RecyclerView.Adapter<MyTopP
                     context.startActivity(i);
                 }
             });
+            Glide.with(context).load(list.get(position).getAvatar()).apply(RequestOptions.centerCropTransform()).into(holder.avatar);
             setAnimation(holder.itemView, position);
         }
     }
@@ -71,11 +75,13 @@ public class MyTopPlayersRecyclerViewAdapter extends RecyclerView.Adapter<MyTopP
         public final View mView;
         public final TextView mContentView;
         public Player mItem;
+        public ImageView avatar;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mContentView = (TextView) view.findViewById(R.id.content);
+            avatar = view.findViewById(R.id.avatar);
         }
 
         @Override

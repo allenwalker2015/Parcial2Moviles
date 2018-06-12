@@ -145,8 +145,8 @@ public class Game_GeneralFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onRefresh() {
 
-        boolean _return = gamesNewsViewModel.updateNewsByCategory(token, category);
-        mySwipeRefreshLayout.setRefreshing(!_return && _return);
+        doInBackGroundTask task = new doInBackGroundTask();
+        task.execute();
     }
 
     public interface OnListFragmentInteractionListener {
@@ -154,12 +154,18 @@ public class Game_GeneralFragment extends Fragment implements SwipeRefreshLayout
         // void onListFragmentInteraction(DummyItem item);
     }
 
-    private class doInBackGroundTask extends AsyncTask<Void, Void, Void> {
+    private class doInBackGroundTask extends AsyncTask<Void, Void, Integer> {
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            gamesNewsViewModel.updateNewsByCategory(token, category);
-            return null;
+        protected Integer doInBackground(Void... voids) {
+
+            return gamesNewsViewModel.updateNewsByCategory(token, category);
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            mySwipeRefreshLayout.setRefreshing(false);
+            super.onPostExecute(integer);
         }
     }
 }

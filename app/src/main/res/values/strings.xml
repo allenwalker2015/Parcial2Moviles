@@ -124,4 +124,7 @@
     <string name="title_activity_player_details">PlayerDetailsActivity</string>
     <string name="logout">Logout</string>
     <string name="mensaje_error">Ha ocurrido un error, verifica tu conexion a internet</string>
+    <string name="server_error_msg">Can\'t connect with server</string>
+    <string name="internal_error_msg">Internal error</string>
+    <string name="sucess">Sucess</string>
 </resources>

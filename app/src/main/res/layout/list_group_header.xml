@@ -4,10 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="?attr/listPreferredItemHeightSmall"
-        android:layout_height="?attr/listPreferredItemHeightSmall" />
     <TextView
         android:id="@+id/label_item"
         android:layout_width="match_parent"

@@ -24,7 +24,7 @@ import android.view.View;
 import android.widget.ExpandableListView;
 
 import com.alphadev.gamesnews.R;
-import com.alphadev.gamesnews.adapter.ExpandableListAdapter;
+import com.alphadev.gamesnews.adapter.DrawerListAdapter;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.fragment.CategoryFragment;
@@ -42,11 +42,11 @@ public class MainActivity extends AppCompatActivity {
     private GamesNewsViewModel gamesNewsViewModel;
     SharedPreferences sp;
     private String token = null;
-    ExpandableListAdapter expandableListAdapter;
+    DrawerListAdapter drawerListAdapter;
     ExpandableListView expandableListView;
     List<MenuModel> headerList = new ArrayList<>();
     HashMap<MenuModel, List<MenuModel>> childList = new HashMap<>();
-    private String news_title, games_title, settings_title, favorites_title, logout_title;
+    private String newsTitle, gamesTitle, settingsTitle, favoritesTitle, logouTitle;
     private LiveData<List<String>> categories;
     private ArrayList<MenuModel> childModelsList;
     private Fragment fragment;
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         sp = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        service = GamesNewsAPIUtils.getAPIService();
+        service = GamesNewsAPIUtils.getAPIService(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
 
@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         expandableListView = findViewById(R.id.expandableListView);
-        prepareMenuData();
-        populateExpandableList();
+        configMenuData();
+        fillExplandableList();
         token = sp.getString("token", "");
         if (token.equals("")) {
             Intent i = new Intent(this, LoginActivity.class);
@@ -119,15 +119,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Function to add any menu option and submenu entries on a expandable list
-    private void prepareMenuData() {
-        get_menu_titles();
-        MenuModel menuModel = new MenuModel(news_title, false, true); //Menu of Java Tutorials
+    private void configMenuData() {
+        getTitles();
+        MenuModel menuModel = new MenuModel(newsTitle, false, true); //Menu of Java Tutorials
         headerList.add(menuModel);
         if (!menuModel.hasChildren) {
             childList.put(menuModel, null);
         }
 
-        menuModel = new MenuModel(games_title, true, true); //Menu of Java Tutorials
+        menuModel = new MenuModel(gamesTitle, true, true); //Menu of Java Tutorials
         headerList.add(menuModel);
 
         categories = gamesNewsViewModel.getNewsCategories();
@@ -148,17 +148,17 @@ public class MainActivity extends AppCompatActivity {
         if (menuModel.hasChildren) {
             childList.put(menuModel, childModelsList);
         }
-        menuModel = new MenuModel(settings_title, false, true); //Menu of Java Tutorials
+        menuModel = new MenuModel(settingsTitle, false, true); //Menu of Java Tutorials
         headerList.add(menuModel);
         if (!menuModel.hasChildren) {
             childList.put(menuModel, null);
         }
-        menuModel = new MenuModel(favorites_title, false, true); //Menu of Java Tutorials
+        menuModel = new MenuModel(favoritesTitle, false, true); //Menu of Java Tutorials
         headerList.add(menuModel);
         if (!menuModel.hasChildren) {
             childList.put(menuModel, null);
         }
-        menuModel = new MenuModel(logout_title, false, true); //Menu of Java Tutorials
+        menuModel = new MenuModel(logouTitle, false, true); //Menu of Java Tutorials
         headerList.add(menuModel);
         if (!menuModel.hasChildren) {
             childList.put(menuModel, null);
@@ -166,36 +166,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Setting adapter for the expandable list and making the visuals appear, + adding what would happen when selected
-    private void populateExpandableList() {
+    private void fillExplandableList() {
 
-        expandableListAdapter = new ExpandableListAdapter(this, headerList, childList);
-        expandableListView.setAdapter(expandableListAdapter);
+        drawerListAdapter = new DrawerListAdapter(this, headerList, childList);
+        expandableListView.setAdapter(drawerListAdapter);
 
         //Click listener for parent option
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                get_menu_titles();
+                getTitles();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 if (headerList.get(groupPosition).isGroup) {
                     if (!headerList.get(groupPosition).hasChildren) {
-                        if (headerList.get(groupPosition).menuName.equals(news_title)) {
+                        if (headerList.get(groupPosition).menuName.equals(newsTitle)) {
                             fragment = NewsFragment.newInstance(2, "Bearer " + token);
                             transaction.addToBackStack(null);
                             transaction.replace(R.id.fragment_container, fragment).commit();
                         }
 
-                        if (headerList.get(groupPosition).menuName.equals(settings_title)) {
+                        if (headerList.get(groupPosition).menuName.equals(settingsTitle)) {
                             fragment = CategoryFragment.newInstance("Bearer " + token, "lol");
                             transaction.addToBackStack(null);
                             transaction.replace(R.id.fragment_container, fragment).commit();
                         }
-                        if (headerList.get(groupPosition).menuName.equals(favorites_title)) {
+                        if (headerList.get(groupPosition).menuName.equals(favoritesTitle)) {
                             fragment = FavoriteFragment.newInstance(2, "Bearer " + token);
                             transaction.addToBackStack(null);
                             transaction.replace(R.id.fragment_container, fragment).commit();
                         }
-                        if (headerList.get(groupPosition).menuName.equals(logout_title)) {
+                        if (headerList.get(groupPosition).menuName.equals(logouTitle)) {
                             sp.edit().remove("token").apply();
                             Intent i = new Intent(MainActivity.this, LoginActivity.class);
                             startActivity(i);
@@ -236,12 +236,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Setting menu option titles
-    public void get_menu_titles() {
-        news_title = getResources().getString(R.string.news);
-        games_title = getResources().getString(R.string.games);
-        settings_title = getResources().getString(R.string.settings);
-        favorites_title = getResources().getString(R.string.favorites);
-        logout_title = getResources().getString(R.string.logout);
+    public void getTitles() {
+        newsTitle = getResources().getString(R.string.news);
+        gamesTitle = getResources().getString(R.string.games);
+        settingsTitle = getResources().getString(R.string.settings);
+        favoritesTitle = getResources().getString(R.string.favorites);
+        logouTitle = getResources().getString(R.string.logout);
 
     }
 

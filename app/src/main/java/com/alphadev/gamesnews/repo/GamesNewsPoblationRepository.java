@@ -3,6 +3,7 @@ package com.alphadev.gamesnews.repo;
 import android.app.Application;
 import android.os.AsyncTask;
 
+import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.api.pojo.FavoriteNewPOJO;
@@ -36,7 +37,7 @@ public class GamesNewsPoblationRepository {
         newDao = db.newDao();
         playerDao = db.playerDao();
         userDao = db.userDao();
-        service = GamesNewsAPIUtils.getAPIService();
+        service = GamesNewsAPIUtils.getAPIService(application);
         favoriteDao = db.favoriteDao();
     }
 
@@ -65,17 +66,26 @@ public class GamesNewsPoblationRepository {
     }
 
     //Borra todas las noticias solo si se obtuvo un nuevo listado desde la api, y las inserta en la base.
-    public boolean updateNews(String token) {
-        UpdateNewsTask task = new UpdateNewsTask();
+    public int updateNews(String token) {
+        List<NewPOJO> list;
         try {
-            boolean b = task.execute(token).get();
-            return b;
-        } catch (InterruptedException e) {
+            list = service.getAllNews(token).execute().body();
+            if (list != null) {
+                newDao.deleteAll();
+                List<String> listfav = favoriteDao.getAllNewsID();
+                for (NewPOJO n : list) {
+                    newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
+                            n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
+                            n.getDescription(), n.getCreatedDate(), listfav.contains(n.getId())));
+                }
+            } else {
+                return R.string.server_error_msg;
+            }
+        } catch (IOException e) {
             e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            return R.string.internal_error_msg;
         }
-        return false;
+        return R.string.sucess;
 
     }
 
@@ -112,49 +122,28 @@ public class GamesNewsPoblationRepository {
     }
 
     //Borra las noticas de una categoria solo si se obtuvo un nuevo listado desde la api,y las inserta en la base.
-    public boolean updateNewsByCategory(String token, String category) {
-        UpdateNewsByCategoryTask task = new UpdateNewsByCategoryTask();
+    public int updateNewsByCategory(String token, String category) {
+        List<NewPOJO> list;
         try {
-            boolean b = task.execute(token, category).get();
-            return b;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public class UpdateNewsByCategoryTask extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            boolean b = false;
-
-            List<NewPOJO> list;
-            try {
-                list = service.getNewsByCategory(strings[0], strings[1]).execute().body();
-                if (list != null) {
-                    newDao.deleteByCategory(strings[1]);
-                    List<String> listfav = favoriteDao.getAllNewsID();
-                    for (NewPOJO n : list) {
-                        newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
-                                n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
-                                n.getDescription(), n.getCreatedDate(), listfav.contains(n.getId())));
-                        b = true;
-                    }
+            list = service.getNewsByCategory(token, category).execute().body();
+            if (list != null) {
+                newDao.deleteByCategory(category);
+                List<String> listfav = favoriteDao.getAllNewsID();
+                for (NewPOJO n : list) {
+                    newDao.insert(new com.alphadev.gamesnews.room.model.New(n.getId(),
+                            n.getTitle(), n.getBody(), n.getGame(), n.getCoverImage(),
+                            n.getDescription(), n.getCreatedDate(), listfav.contains(n.getId())));
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                return R.string.server_error_msg;
             }
-            return b;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return R.string.internal_error_msg;
         }
+        return R.string.sucess;
     }
+
 
     //Borra la informacion de usuario solo si se obtuvo un resultado correcto la api,y la inserta la nueva informacion en la base.
     public boolean updateUserInfo(String token) {
@@ -200,47 +189,24 @@ public class GamesNewsPoblationRepository {
     }
 
     //Borra los players que pertenecen a una categoria solo si se obtuvo un resultado correcto la api,y inserta la nueva informacion en la base.
-    public boolean updatePlayersByCategory(String token, String category) {
-        UpdatePlayersTaskByCategory task = new UpdatePlayersTaskByCategory();
+    public int updatePlayersByCategory(String token, String category) {
+        List<PlayerPOJO> list;
         try {
-            boolean b = task.execute(token, category).get();
-            return b;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public class UpdatePlayersTaskByCategory extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            boolean b = false;
-
-            List<PlayerPOJO> list;
-            try {
-                list = service.getPlayersByCategory(strings[0], strings[1]).execute().body();
-                if (list != null) {
-                    playerDao.deleteAll();
-                    for (PlayerPOJO n : list) {
-                        playerDao.insert(new Player(
-                                n.getAvatar(), n.getId(), n.getName(), n.getBiografia(), n.getGame()));
-                        b = true;
-                    }
+            list = service.getPlayersByCategory(token, category).execute().body();
+            if (list != null) {
+                playerDao.deleteAll();
+                for (PlayerPOJO n : list) {
+                    playerDao.insert(new Player(
+                            n.getAvatar(), n.getId(), n.getName(), n.getBiografia(), n.getGame()));
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return b;
+            } else return R.string.server_error_msg;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return R.string.internal_error_msg;
         }
+        return R.string.sucess;
     }
+
 
     //Inserta un favorito, si se pudo almacenar en la api se procede a guardar como favorito en la db.
     public boolean addFavorite(String token, String user, String n_new) {
