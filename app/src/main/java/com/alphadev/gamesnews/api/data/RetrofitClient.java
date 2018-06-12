@@ -2,6 +2,7 @@ package com.alphadev.gamesnews.api.data;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 import com.alphadev.gamesnews.activities.LoginActivity;
 
@@ -27,14 +28,10 @@ public class RetrofitClient {
                             okhttp3.Response response = chain.proceed(request);
 
                             // todo deal with the issues the way you need to
-                            if (response.code() == 500) {
-                                context.startActivity(
-                                        new Intent(
-                                                context,
-                                                LoginActivity.class
-                                        )
-                                );
-
+                            if (response.code() == 401) {
+                                SharedPreferences sp = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+                                sp.edit().remove("token").apply();
+                                context.startActivity(new Intent(context, LoginActivity.class));
                                 return response;
                             }
 
