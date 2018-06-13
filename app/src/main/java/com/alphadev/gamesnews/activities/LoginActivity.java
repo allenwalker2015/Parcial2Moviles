@@ -35,7 +35,7 @@ import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.api.pojo.TokenPOJO;
-import com.alphadev.gamesnews.api.pojo.UserWithFavsPOJO;
+import com.alphadev.gamesnews.api.pojo.UserPOJO;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
 import java.io.IOException;
@@ -331,7 +331,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 TokenPOJO token;
                 token = null;
                 boolean isUserUpdated = false;
-                UserWithFavsPOJO user = null;
+                UserPOJO user = null;
                 try {
                     token = service.logIn(mEmail, mPassword).execute().body();
 
@@ -347,6 +347,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         e.printStackTrace();
                     }
                     sp.edit().putString("userId", user.getId()).commit();
+                    sp.edit().putString("username", user.getUser()).commit();
                     isUserUpdated = gamesNewsViewModel.updateUserInfoNoAsync(token.getProcessedToken());
 
                 }

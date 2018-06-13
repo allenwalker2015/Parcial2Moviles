@@ -127,4 +127,11 @@
     <string name="server_error_msg">Can\'t connect with server</string>
     <string name="internal_error_msg">Internal error</string>
     <string name="sucess">Sucess</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_password">Confirm new password</string>
+    <string name="save">Save</string>
+    <string name="empty_field">The field is empty</string>
+    <string name="not_match">The passwords not match</string>
+    <string name="password_updated">Password updated</string>
 </resources>

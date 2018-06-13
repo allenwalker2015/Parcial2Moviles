@@ -6,12 +6,11 @@ import android.os.AsyncTask;
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
-import com.alphadev.gamesnews.api.pojo.FavoriteNewPOJO;
 import com.alphadev.gamesnews.api.pojo.MessageResultPOJO;
 import com.alphadev.gamesnews.api.pojo.NewNewPOJO;
 import com.alphadev.gamesnews.api.pojo.NewPOJO;
 import com.alphadev.gamesnews.api.pojo.PlayerPOJO;
-import com.alphadev.gamesnews.api.pojo.UserWithFavsPOJO;
+import com.alphadev.gamesnews.api.pojo.UserPOJO;
 import com.alphadev.gamesnews.room.GamesNewsDataBase;
 import com.alphadev.gamesnews.room.dao.FavoriteDao;
 import com.alphadev.gamesnews.room.dao.NewDao;
@@ -24,6 +23,8 @@ import com.alphadev.gamesnews.room.model.User;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import retrofit2.Call;
 
 public class GamesNewsPoblationRepository {
     private static FavoriteDao favoriteDao;
@@ -41,12 +42,23 @@ public class GamesNewsPoblationRepository {
         favoriteDao = db.favoriteDao();
     }
 
-
+    public boolean updatePassword(String token, String iduser, String new_password) {
+        Call<UserPOJO> var = service.editUser(token, iduser, new_password);
+        try {
+            UserPOJO user = var.execute().body();
+            if (user != null) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     //Borra la informacion de usuario solo si se obtuvo un resultado correcto la api,y la inserta la nueva informacion en la base.
     //Esta la cree porque si ejecutas una AsyncTask dentro de otra AsyncTask se loopea y nunca termina.
     // que es el caso de cuando compruebo las credenciales del usuario. en la actividad del login
     public boolean updateUserInfoNoAsync(String token) {
-        UserWithFavsPOJO user;
+        UserPOJO user;
         boolean b = false;
         try {
             user = service.getUserDetail(token).execute().body();
@@ -54,8 +66,8 @@ public class GamesNewsPoblationRepository {
                 userDao.deleteAll();
                 favoriteDao.deleteAll();
                 userDao.insert(new User(user.getId(), user.getUser(), ""));
-                for (FavoriteNewPOJO n : user.getFavoriteNews()) {
-                    favoriteDao.insert(new Favorite(n.getId(), user.getId()));
+                for (String n : user.getNews()) {
+                    favoriteDao.insert(new Favorite(n, user.getId()));
                 }
                 b = true;
             }
@@ -170,15 +182,15 @@ public class GamesNewsPoblationRepository {
         protected Boolean doInBackground(String... strings) {
             boolean b = false;
 
-            UserWithFavsPOJO user;
+            UserPOJO user;
             try {
                 user = service.getUserDetail(strings[0]).execute().body();
                 if (user != null) {
                     userDao.deleteAll();
                     favoriteDao.deleteAll();
                     userDao.insert(new User(user.getId(), user.getUser(), ""));
-                    for (FavoriteNewPOJO n : user.getFavoriteNews()) {
-                        favoriteDao.insert(new Favorite(n.getId(), user.getId()));
+                    for (String n : user.getNews()) {
+                        favoriteDao.insert(new Favorite(n, user.getId()));
                     }
                 }
             } catch (IOException e) {

@@ -57,7 +57,7 @@ public interface GamesNewsAPIService {
     Call<UserPOJO> deleteUserByID(@Header("Authorization") String authHeader, @Path("id") String id);
 
     @GET("users/detail")
-    Call<UserWithFavsPOJO> getUserDetail(@Header("Authorization") String authHeader);
+    Call<UserPOJO> getUserDetail(@Header("Authorization") String authHeader);
 
     //AGREGAR NOTICIA FAVORITA A UN USUARIO
     @POST("/users/{id}/fav")

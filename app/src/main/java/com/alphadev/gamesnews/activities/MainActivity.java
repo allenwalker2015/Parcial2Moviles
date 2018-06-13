@@ -29,6 +29,7 @@ import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.fragment.CategoryFragment;
 import com.alphadev.gamesnews.fragment.FavoriteFragment;
+import com.alphadev.gamesnews.fragment.NewPasswordFragment;
 import com.alphadev.gamesnews.fragment.NewsFragment;
 import com.alphadev.gamesnews.menu.MenuModel;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
@@ -186,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if (headerList.get(groupPosition).menuName.equals(settingsTitle)) {
-                            fragment = CategoryFragment.newInstance("Bearer " + token, "lol");
+                            fragment = new NewPasswordFragment();
                             transaction.addToBackStack(null);
                             transaction.replace(R.id.fragment_container, fragment).commit();
                         }

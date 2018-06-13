@@ -25,13 +25,6 @@ public class UserWithFavsPOJO {
     @Expose
     private Integer v;
 
-    public List<FavoriteNewPOJO> getFavoriteNews() {
-        return favoriteNews;
-    }
-
-    public void setFavoriteNews(List<FavoriteNewPOJO> favoriteNews) {
-        this.favoriteNews = favoriteNews;
-    }
 
     public String getId() {
         return id;

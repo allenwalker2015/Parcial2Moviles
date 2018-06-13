@@ -90,6 +90,10 @@ public abstract class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyN
         this.list = list;
     }
 
+    public List<New> getList() {
+        return list;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         //        public final New mNew;

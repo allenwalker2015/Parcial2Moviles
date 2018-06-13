@@ -72,5 +72,8 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return gamesNewsPoblationRepository.updatePlayersByCategory(token, category);
     }
 
+    public boolean updatePassword(String token, String iduser, String new_password) {
+        return gamesNewsPoblationRepository.updatePassword(token, iduser, new_password);
+    }
 
 }
