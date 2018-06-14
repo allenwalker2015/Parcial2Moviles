@@ -10,14 +10,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
@@ -126,22 +125,25 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         } else {
-            GridLayoutManager mLayoutManager = new GridLayoutManager(context, mColumnCount);
-            mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    switch (mAdapter.getItemViewType(position)) {
-                        case 1:
-                            return 2;
-                        default:
-                            return 1;
-                    }
-                }
-            });
-            recyclerView.setLayoutManager(mLayoutManager);
+//            GridLayoutManager mLayoutManager = new GridLayoutManager(context, mColumnCount);
+//            mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//                @Override
+//                public int getSpanSize(int position) {
+//                    switch (mAdapter.getItemViewType(position)) {
+//                        case 1:
+//                            return 2;
+//                        default:
+//                            return 1;
+//                    }
+//                }
+//            });
+//            recyclerView.setLayoutManager(mLayoutManager);
+//        }
+//        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
+//        recyclerView.setLayoutAnimation(animation);
+            StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(mColumnCount, StaggeredGridLayoutManager.VERTICAL);
         }
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
-        recyclerView.setLayoutAnimation(animation);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
         return view;

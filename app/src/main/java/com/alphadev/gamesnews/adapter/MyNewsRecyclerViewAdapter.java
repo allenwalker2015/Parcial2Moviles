@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,10 @@ public abstract class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyN
                     context.startActivity(i);
                 }
             });
+            if (position == 0) {
+                StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+                layoutParams.setFullSpan(true);
+            }
             if (list.get(position).isFavorite())
                 holder.star.setImageResource(android.R.drawable.star_big_on);
             else holder.star.setImageResource(android.R.drawable.star_big_off);

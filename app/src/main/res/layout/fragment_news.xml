@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardUseCompatPadding="true"
     android:elevation="11dp">
@@ -35,18 +35,20 @@
         </RelativeLayout>
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/NewsTitle"
             android:text="@string/sample"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:maxLines="8"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
         <TextView
             android:id="@+id/content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/NewsSubtitle"
             android:text="@string/sample"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:maxLines="8"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
     </LinearLayout>
 </android.support.v7.widget.CardView>
