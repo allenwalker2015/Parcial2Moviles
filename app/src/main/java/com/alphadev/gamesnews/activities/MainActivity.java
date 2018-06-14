@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import com.alphadev.gamesnews.R;
 import com.alphadev.gamesnews.adapter.DrawerListAdapter;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private LiveData<List<String>> categories;
     private ArrayList<MenuModel> childModelsList;
     private Fragment fragment;
+    private String changePasswordTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-
+        View headerLayout = navigationView.getHeaderView(0);
+        TextView name = headerLayout.findViewById(R.id.name);
+        name.setText(sp.getString("username", ""));
         expandableListView = findViewById(R.id.expandableListView);
         configMenuData();
         fillExplandableList();
@@ -122,15 +126,14 @@ public class MainActivity extends AppCompatActivity {
     //Function to add any menu option and submenu entries on a expandable list
     private void configMenuData() {
         getTitles();
-        MenuModel menuModel = new MenuModel(newsTitle, false, true); //Menu of Java Tutorials
+        MenuModel menuModel = new MenuModel(newsTitle, false, true); 
         headerList.add(menuModel);
         if (!menuModel.hasChildren) {
             childList.put(menuModel, null);
         }
 
-        menuModel = new MenuModel(gamesTitle, true, true); //Menu of Java Tutorials
+        menuModel = new MenuModel(gamesTitle, true, true); 
         headerList.add(menuModel);
-
         categories = gamesNewsViewModel.getNewsCategories();
         childModelsList = new ArrayList<>();
         categories.observe(this, new Observer<List<String>>() {
@@ -149,21 +152,19 @@ public class MainActivity extends AppCompatActivity {
         if (menuModel.hasChildren) {
             childList.put(menuModel, childModelsList);
         }
-        menuModel = new MenuModel(settingsTitle, false, true); //Menu of Java Tutorials
+        menuModel = new MenuModel(settingsTitle, true, true);
+        headerList.add(menuModel);
+        ArrayList<MenuModel> childModelsList2 = new ArrayList<>();
+        childModelsList2.add(new MenuModel(logouTitle, false, true));
+        childModelsList2.add(new MenuModel(changePasswordTitle, false, true));
+        childList.put(menuModel, childModelsList2);
+
+        menuModel = new MenuModel(favoritesTitle, false, true); 
         headerList.add(menuModel);
         if (!menuModel.hasChildren) {
             childList.put(menuModel, null);
         }
-        menuModel = new MenuModel(favoritesTitle, false, true); //Menu of Java Tutorials
-        headerList.add(menuModel);
-        if (!menuModel.hasChildren) {
-            childList.put(menuModel, null);
-        }
-        menuModel = new MenuModel(logouTitle, false, true); //Menu of Java Tutorials
-        headerList.add(menuModel);
-        if (!menuModel.hasChildren) {
-            childList.put(menuModel, null);
-        }
+
     }
 
     //Setting adapter for the expandable list and making the visuals appear, + adding what would happen when selected
@@ -229,6 +230,18 @@ public class MainActivity extends AppCompatActivity {
                         transaction.addToBackStack(null);
                         transaction.replace(R.id.fragment_container, fragment).commit();
                     }
+
+                    if (category.equals(changePasswordTitle)) {
+                        fragment = new NewPasswordFragment();
+                        transaction.addToBackStack(null);
+                        transaction.replace(R.id.fragment_container, fragment).commit();
+                    }
+                    if (category.equals(logouTitle)) {
+                        sp.edit().remove("token").apply();
+                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(i);
+                        finish();
+                    }
                     onBackPressed();
                 }
                 return false;
@@ -243,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
         settingsTitle = getResources().getString(R.string.settings);
         favoritesTitle = getResources().getString(R.string.favorites);
         logouTitle = getResources().getString(R.string.logout);
+        changePasswordTitle = getString(R.string.change_password);
 
     }
 
