@@ -16,7 +16,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
+import com.alphadev.gamesnews.api.GamesNewsAPIService;
+import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
+import com.alphadev.gamesnews.api.pojo.UserPOJO;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
+
+import java.io.IOException;
 
 public class NewPasswordFragment extends Fragment {
 
@@ -25,6 +30,7 @@ public class NewPasswordFragment extends Fragment {
     Button save;
     private GamesNewsViewModel gamesNewsViewModel;
     private SharedPreferences sp;
+    private GamesNewsAPIService service;
     // private OnFragmentInteractionListener mListener;
 
     public NewPasswordFragment() {
@@ -55,13 +61,16 @@ public class NewPasswordFragment extends Fragment {
         save = v.findViewById(R.id.save_buttton);
         gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
         sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
-
+        service = GamesNewsAPIUtils.getAPIService(getContext());
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String new_password_txt = new_password.getText().toString();
                 String confirm_password_txt = confirm_password.getText().toString();
-
+                String old_password_txt = old_password.getText().toString();
+                if (TextUtils.isEmpty(old_password_txt)) {
+                    old_password.setError(getString(R.string.empty_field));
+                }
                 if (TextUtils.isEmpty(new_password_txt)) {
                     new_password.setError(getString(R.string.empty_field));
                 }
@@ -75,7 +84,7 @@ public class NewPasswordFragment extends Fragment {
                     doInBackground task = new doInBackground();
                     String token = sp.getString("token", "");
                     String user = sp.getString("userId", "");
-                    task.execute("Bearer " + token, user, new_password_txt);
+                    task.execute("Bearer " + token, user, new_password_txt, old_password_txt);
                 }
             }
         });
@@ -112,25 +121,33 @@ public class NewPasswordFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public class doInBackground extends AsyncTask<String, Void, Boolean> {
+    public class doInBackground extends AsyncTask<String, Void, Integer> {
 
         @Override
-        protected Boolean doInBackground(String... strings) {
-            return gamesNewsViewModel.updatePassword(strings[0], strings[1], strings[2]);
+        protected Integer doInBackground(String... strings) {
+            try {
+                UserPOJO user = service.getUserDetail(strings[0]).execute().body();
+                if (user != null) {
+                    if (user.getPassword().equals(strings[3])) {
+                        if (gamesNewsViewModel.updatePassword(strings[0], strings[1], strings[2])) {
+                            return R.string.sucess;
+                        }
+                    } else return R.string.error_incorrect_password;
+                }
+                return R.string.server_error_msg;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return R.string.server_error_msg;
+            }
         }
 
         @Override
-        protected void onPostExecute(Boolean b) {
-
-            if (b) {
+        protected void onPostExecute(Integer b) {
                 new_password.setText("");
                 old_password.setText("");
                 confirm_password.setText("");
-                Toast.makeText(getContext(), R.string.password_updated, Toast.LENGTH_SHORT).show();
-            } else
-                Toast.makeText(getContext(), R.string.password_updated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), b, Toast.LENGTH_SHORT).show();
 
-            super.onPostExecute(b);
         }
     }
 }
