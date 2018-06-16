@@ -219,7 +219,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private boolean isPasswordValid (String password){
             //TODO: Replace this with your own logic
-            return password.length() > 4;
+            return true;
         }
 
         /**
@@ -375,5 +375,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 showProgress(false);
             }
         }
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
+}
 
