@@ -7,6 +7,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -83,7 +85,12 @@ public class Game_ImagesFragment extends Fragment {
                 recyclerView.setLayoutManager(new ImageLayout(context, mColumnCount));
             }
             final LiveData<List<String>> list = gamesNewsViewModel.getAllNewsImageByCategory(category);
-            mAdapter = new MyImagesRecyclerViewAdapter(context);
+            mAdapter = new MyImagesRecyclerViewAdapter(context) {
+                @Override
+                public void onImageClick(String s) {
+                    showDialog(s);
+                }
+            };
             recyclerView.setAdapter(mAdapter);
 
             list.observe(this, new Observer<List<String>>() {
@@ -118,5 +125,18 @@ public class Game_ImagesFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
 //        // TODO: Update argument type and name
 //        void onListFragmentInteraction(DummyItem item);
+    }
+
+    public void showDialog(String imageURL) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        PhotoViewFragment newFragment = PhotoViewFragment.newInstance(imageURL);
+        // The device is smaller, so show the fragment fullscreen
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        // For a little polish, specify a transition animation
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        // To make it fullscreen, use the 'content' root view as the container
+        // for the fragment, which is always the root view for the activity
+        transaction.add(android.R.id.content, newFragment)
+                .addToBackStack(null).commit();
     }
 }

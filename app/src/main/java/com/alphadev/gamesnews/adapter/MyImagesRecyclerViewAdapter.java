@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
 import com.bumptech.glide.Glide;
@@ -14,7 +13,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
-public class MyImagesRecyclerViewAdapter extends RecyclerView.Adapter<MyImagesRecyclerViewAdapter.ViewHolder> {
+public abstract class MyImagesRecyclerViewAdapter extends RecyclerView.Adapter<MyImagesRecyclerViewAdapter.ViewHolder> {
 
     private List<String> list;
     private final Context context;
@@ -35,7 +34,7 @@ public class MyImagesRecyclerViewAdapter extends RecyclerView.Adapter<MyImagesRe
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 //        holder.mItem = list.get(position);
 //        holder.mIdView.setText(list.get(position).id);
 //        holder.mContentView.setText(list.get(position).content);
@@ -44,18 +43,14 @@ public class MyImagesRecyclerViewAdapter extends RecyclerView.Adapter<MyImagesRe
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    Toast.makeText(context, "Aqui pasara algo xD", Toast.LENGTH_SHORT).show();
-//                if (null != mListener) {
-//                    // Notify the active callbacks interface (the activity, if the
-//                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder.mItem);
-//                }
+                    onImageClick(list.get(position));
                 }
             });
 
         }
     }
+
+    public abstract void onImageClick(String s);
 
     @Override
     public int getItemCount() {
