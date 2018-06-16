@@ -22,16 +22,13 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="top_players">Top Players</string>
     <string name="generals">Generals</string>
     <string name="images">Images</string>
-    <string name="title_activity_new_detail">NewDetailActivity</string>
+    <string name="title_activity_new_detail">New Detail</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -121,9 +118,9 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
-    <string name="title_activity_player_details">PlayerDetailsActivity</string>
+    <string name="title_activity_player_details">Player Details</string>
     <string name="logout">Logout</string>
-    <string name="mensaje_error">Ha ocurrido un error, verifica tu conexion a internet</string>
+    <string name="mensaje_error">We can\'t connect internet</string>
     <string name="server_error_msg">Can\'t connect with server</string>
     <string name="internal_error_msg">Internal error</string>
     <string name="sucess">Sucess</string>
@@ -137,4 +134,5 @@
     <string name="change_password">Change password</string>
     <string name="no_data_available">No news to show...</string>
     <string name="search">Search</string>
+    <string name="permission_rationale">Contacts permissions are needed for providing email         completions</string>
 </resources>

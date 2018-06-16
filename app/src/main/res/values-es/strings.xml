@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Gaming News</string>
+    <string name="navigation_drawer_open">Abrir navegacion</string>
+    <string name="navigation_drawer_close">Cerrar navegacion</string>
+    <string name="nav_header_desc">Header de navegacion</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="sample">ejemplo</string>
+    <string name="news">Noticias</string>
+    <string name="games">Juegos</string>
+    <string name="settings">Ajustes</string>
+    <string name="favorites">Favoritos</string>
+    <string name="title_activity_login">Iniciar Sesion</string>
+    <string name="prompt_email">Correo</string>
+    <string name="prompt_password">Contraseña(Opcional)</string>
+    <string name="action_sign_in">Iniciar sesion</string>
+    <string name="action_sign_in_short">Iniciar Sesion</string>
+    <string name="error_invalid_email">Este correo es invalido</string>
+    <string name="error_invalid_password">El password es muy corto</string>
+    <string name="error_incorrect_password">El password es incorrecto</string>
+    <string name="error_field_required">Este campo es requerido</string>
+    <string name="permission_rationale">"Se necesita el acceso a contactos para poder mostrar los         correos    "</string>
+    <string name="hello_blank_fragment">Hola fragmento en blanco</string>
+    <string name="top_players">Mejores jugadores</string>
+    <string name="generals">Generales</string>
+    <string name="images">Imagenes</string>
+    <string name="title_activity_new_detail">Detalles de Noticia</string>
+    <string name="title_activity_player_details">Detalles de Jugadores</string>
+    <string name="logout">Cerrar sesion</string>
+    <string name="mensaje_error">Ha ocurrido un error, verifica tu conexion a internet</string>
+    <string name="server_error_msg">No podemos contactar al servidor</string>
+    <string name="internal_error_msg">Error interno</string>
+    <string name="sucess">Completado</string>
+    <string name="old_password">Password viejo</string>
+    <string name="new_password">Nuevo password</string>
+    <string name="confirm_password">Confirmacion</string>
+    <string name="save">Guardar</string>
+    <string name="empty_field">El campo esta vacio</string>
+    <string name="not_match">Las contraseñas no coinciden</string>
+    <string name="password_updated">Password actualizado</string>
+    <string name="change_password">Cambiar password</string>
+    <string name="no_data_available">No hay noticias para mostrar</string>
+    <string name="search">Buscar</string>
+</resources>
