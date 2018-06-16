@@ -34,7 +34,7 @@ public class RetrofitClient {
                             if (response.code() == 401 || response.code() == 500) {
                                 SharedPreferences sp = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
                                 sp.edit().remove("token").apply();
-                                context.startActivity(new Intent(context, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                context.startActivity(new Intent(context, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY));
                                 return response;
                             }
                             return response;
