@@ -24,7 +24,6 @@ import com.alphadev.gamesnews.adapter.MyNewsRecyclerViewAdapter;
 import com.alphadev.gamesnews.room.model.New;
 import com.alphadev.gamesnews.viewmodel.GamesNewsViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -108,13 +107,8 @@ public class FilteredNewsFragment extends Fragment implements SwipeRefreshLayout
         observer = new Observer<List<New>>() {
             @Override
             public void onChanged(@Nullable List<New> news) {
-                List<New> new_list = new ArrayList<>();
-                mAdapter.setList(new_list);
+                mAdapter.setList(news);
                 mAdapter.notifyDataSetChanged();
-                for (New n : news) {
-                    new_list.add(n);
-                    mAdapter.notifyItemInserted(new_list.size());
-                }
             }
         };
         list.observe(FilteredNewsFragment.this, observer);
@@ -213,13 +207,8 @@ public class FilteredNewsFragment extends Fragment implements SwipeRefreshLayout
             observer = new Observer<List<New>>() {
                 @Override
                 public void onChanged(@Nullable List<New> news) {
-                    List<New> new_list = new ArrayList<>();
-                    mAdapter.setList(new_list);
+                    mAdapter.setList(news);
                     mAdapter.notifyDataSetChanged();
-                    for (New n : news) {
-                        new_list.add(n);
-                        mAdapter.notifyItemInserted(new_list.size());
-                    }
                 }
             };
             list.observe(FilteredNewsFragment.this, observer);
