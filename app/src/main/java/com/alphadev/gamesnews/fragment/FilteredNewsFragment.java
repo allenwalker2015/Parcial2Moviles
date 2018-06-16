@@ -206,7 +206,8 @@ public class FilteredNewsFragment extends Fragment implements SwipeRefreshLayout
     }
 
     public void updateFilter(String filter) {
-        if (!isDetached() && isAdded()) {
+        if (isAdded()) {
+//        if (!isDetached() && isAdded()) {
             list.removeObserver(observer);
             list = gamesNewsViewModel.getFilteredNews(filter);
             observer = new Observer<List<New>>() {

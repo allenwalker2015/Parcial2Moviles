@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String KEY_SAVED_FILTER_CONSTRAINT = "query";
     GamesNewsAPIService service;
     private GamesNewsViewModel gamesNewsViewModel;
     SharedPreferences sp;
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private String changePasswordTitle;
     private SearchView searchView;
     private FilteredNewsFragment filter_fragment;
+    private String currentQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem searchItem = menu.findItem(R.id.search);
 
         searchView = (SearchView) searchItem.getActionView();
+
         MenuItem.OnActionExpandListener expandListener = new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
@@ -135,7 +139,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 // Do something when expanded
-                filter_fragment = FilteredNewsFragment.newInstance(2, "Bearer " + token, "");
+//                if(filter_fragment==null) {
+
+                if (currentQuery != null) {
+                    searchView.setQuery(currentQuery, true);
+                    filter_fragment = FilteredNewsFragment.newInstance(2, "Bearer " + token, "%" + currentQuery + "%");
+                } else {
+                    filter_fragment = FilteredNewsFragment.newInstance(2, "Bearer " + token, "");
+                }
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, filter_fragment);
                 transaction.addToBackStack(null);
@@ -147,6 +158,10 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+//                String text = "%" + query + "%";
+//                if (filter_fragment != null) {
+//                    filter_fragment.updateFilter(text);
+//                }
                 return false;
             }
 
@@ -159,7 +174,13 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        if (!TextUtils.isEmpty(currentQuery)) {
 
+            searchItem.expandActionView();
+            searchView.setQuery(currentQuery, true);
+            currentQuery = null;
+            searchView.clearFocus();
+        }
         return true;
     }
 
@@ -322,6 +343,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            currentQuery = savedInstanceState.getString(KEY_SAVED_FILTER_CONSTRAINT);
+        }
+
         // Read values from the "savedInstanceState"
     }
 
@@ -329,7 +354,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         // Save the values you need into "outState"
         // outState.putSerializable("fragment",fragment);
+        if (filter_fragment != null) {
+            getSupportFragmentManager().popBackStack();
+            filter_fragment = null;
+        }
+
+        currentQuery = searchView.getQuery().toString();
+        outState.putString(KEY_SAVED_FILTER_CONSTRAINT, currentQuery);
         super.onSaveInstanceState(outState);
+
     }
 
 
