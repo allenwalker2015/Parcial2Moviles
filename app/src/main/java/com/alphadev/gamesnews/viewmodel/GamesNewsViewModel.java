@@ -43,6 +43,9 @@ public class GamesNewsViewModel extends AndroidViewModel {
         return mRepository.getFavoriteNews();
     }
 
+    public LiveData<List<com.alphadev.gamesnews.room.model.New>> getFilteredNews(String filter) {
+        return mRepository.getFilteredNews(filter);
+    }
 
     public LiveData<List<String>> getAllNewsImageByCategory(String category) {
         return mRepository.getNewsImageByCategory(category);

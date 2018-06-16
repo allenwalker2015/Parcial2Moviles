@@ -44,6 +44,10 @@ public class GamesNewsRepository {
         return mAllNews;
     }
 
+    public LiveData<List<com.alphadev.gamesnews.room.model.New>> getFilteredNews(String filter) {
+        return newDao.getFilteredNews(filter);
+    }
+
     public LiveData<List<com.alphadev.gamesnews.room.model.New>> getNewsByCategory(String category) {
         return newDao.getNewsByCategory(category);
     }

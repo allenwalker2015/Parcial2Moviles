@@ -121,6 +121,7 @@ public abstract class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyN
         else return 0;
     }
 
+
 //    private void setAnimation(View viewToAnimate, int position)
 //    {
 //        // If the bound view wasn't previously displayed on screen, it's animated

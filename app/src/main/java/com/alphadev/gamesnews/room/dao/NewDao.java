@@ -51,6 +51,9 @@ public interface NewDao {
     @Query("UPDATE new SET favorite=0 WHERE _id=:id")
     void unsetFavorite(String id);
 
+    @Query("SELECT * FROM new WHERE title LIKE :filter ORDER BY title DESC")
+    LiveData<List<New>> getFilteredNews(String filter);
+
 
 
 

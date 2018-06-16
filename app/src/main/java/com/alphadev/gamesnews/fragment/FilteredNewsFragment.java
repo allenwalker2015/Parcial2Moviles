@@ -17,7 +17,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
@@ -34,11 +33,12 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FilteredNewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
     private static final String ARG_COLUMN_COUNT = "column-count", TOKEN = "token";
     private static final String USER_ID = "userId";
+    private static final String FILTER = "filter";
     private int mColumnCount = 1;
     SharedPreferences sp;
     private OnListFragmentInteractionListener mListener;
@@ -47,18 +47,21 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
     private MyNewsRecyclerViewAdapter mAdapter;
     private LiveData<List<New>> list;
     SwipeRefreshLayout mySwipeRefreshLayout;
-    private TextView emptyView;
+    private String filter;
+    private Observer<List<New>> observer;
 
-    public FavoriteFragment() {
+
+    public FilteredNewsFragment() {
     }
 
 
     @SuppressWarnings("unused")
-    public static FavoriteFragment newInstance(int columnCount, String token) {
-        FavoriteFragment fragment = new FavoriteFragment();
+    public static FilteredNewsFragment newInstance(int columnCount, String token, String filter) {
+        FilteredNewsFragment fragment = new FilteredNewsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         args.putString(TOKEN, token);
+        args.putString(FILTER, filter);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,6 +73,7 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             token = getArguments().getString(TOKEN);
+            filter = getArguments().getString(FILTER);
         }
     }
 
@@ -79,17 +83,15 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
         sp = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
-        // Set the adapter
 
         Context context = view.getContext();
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         mySwipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         mySwipeRefreshLayout.setOnRefreshListener(this);
         doInBackGroundTask task = new doInBackGroundTask();
-        emptyView = (TextView) view.findViewById(R.id.empty_view);
         task.execute();
         user = sp.getString(USER_ID, "");
-        list = gamesNewsViewModel.getFavoriteNews();
+        list = gamesNewsViewModel.getFilteredNews(filter);
 
         mAdapter = new MyNewsRecyclerViewAdapter(context) {
             @Override
@@ -103,7 +105,7 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
                 }
             }
         };
-        list.observe(this, new Observer<List<New>>() {
+        observer = new Observer<List<New>>() {
             @Override
             public void onChanged(@Nullable List<New> news) {
                 List<New> new_list = new ArrayList<>();
@@ -114,7 +116,8 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
                     mAdapter.notifyItemInserted(new_list.size());
                 }
             }
-        });
+        };
+        list.observe(FilteredNewsFragment.this, observer);
 
 //            AsyncTask<Void,Void,Void> task = new AsyncTask<Void, Void, Void>() {
 //                @Override
@@ -128,7 +131,7 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         } else {
-//            GridLayoutManager mLayoutManager = new GridLayoutManager(context, mColumnCount);
+            StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(mColumnCount, StaggeredGridLayoutManager.VERTICAL);
 //            mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 //                @Override
 //                public int getSpanSize(int position) {
@@ -140,13 +143,9 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
 //                    }
 //                }
 //            });
-//            recyclerView.setLayoutManager(mLayoutManager);
-//        }
-//        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
-//        recyclerView.setLayoutAnimation(animation);
-            StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(mColumnCount, StaggeredGridLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(mLayoutManager);
         }
+//        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
@@ -175,7 +174,6 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onRefresh() {
         doInBackGroundTask task = new doInBackGroundTask();
         task.execute();
-
     }
 
     /**
@@ -197,7 +195,6 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         @Override
         protected Integer doInBackground(Void... voids) {
-
             return gamesNewsViewModel.updateNews(token);
         }
 
@@ -208,5 +205,23 @@ public class FavoriteFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
     }
 
-
+    public void updateFilter(String filter) {
+        if (!isDetached() && isAdded()) {
+            list.removeObserver(observer);
+            list = gamesNewsViewModel.getFilteredNews(filter);
+            observer = new Observer<List<New>>() {
+                @Override
+                public void onChanged(@Nullable List<New> news) {
+                    List<New> new_list = new ArrayList<>();
+                    mAdapter.setList(new_list);
+                    mAdapter.notifyDataSetChanged();
+                    for (New n : news) {
+                        new_list.add(n);
+                        mAdapter.notifyItemInserted(new_list.size());
+                    }
+                }
+            };
+            list.observe(FilteredNewsFragment.this, observer);
+        }
+    }
 }

@@ -17,8 +17,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import com.alphadev.gamesnews.R;
@@ -128,14 +126,12 @@ public class Game_GeneralFragment extends Fragment implements SwipeRefreshLayout
 //                    }
 //                }
 //            });
-//            LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
-//            recyclerView.setLayoutAnimation(animation);
 
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setLayoutManager(mLayoutManager);
         }
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
-        recyclerView.setLayoutAnimation(animation);
+//        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.grid_layout_animation_from_bottom);
+//        recyclerView.setLayoutAnimation(animation);
         recyclerView.setAdapter(mAdapter);
 
         return view;

@@ -17,6 +17,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ import com.alphadev.gamesnews.api.GamesNewsAPIService;
 import com.alphadev.gamesnews.api.data.remote.GamesNewsAPIUtils;
 import com.alphadev.gamesnews.fragment.CategoryFragment;
 import com.alphadev.gamesnews.fragment.FavoriteFragment;
+import com.alphadev.gamesnews.fragment.FilteredNewsFragment;
 import com.alphadev.gamesnews.fragment.NewPasswordFragment;
 import com.alphadev.gamesnews.fragment.NewsFragment;
 import com.alphadev.gamesnews.menu.MenuModel;
@@ -51,8 +53,10 @@ public class MainActivity extends AppCompatActivity {
     private String newsTitle, gamesTitle, settingsTitle, favoritesTitle, logouTitle;
     private LiveData<List<String>> categories;
     private ArrayList<MenuModel> childModelsList;
-    private Fragment fragment;
+    //private Fragment fragment;
     private String changePasswordTitle;
+    private SearchView searchView;
+    private FilteredNewsFragment filter_fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,20 +68,18 @@ public class MainActivity extends AppCompatActivity {
         service = GamesNewsAPIUtils.getAPIService(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         gamesNewsViewModel = ViewModelProviders.of(this).get(GamesNewsViewModel.class);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
         TextView name = headerLayout.findViewById(R.id.name);
         name.setText(sp.getString("username", ""));
         expandableListView = findViewById(R.id.expandableListView);
-        configMenuData();
-        fillExplandableList();
+        setupDrawerMenuList();
+        setDrawerMenuListeners();
         token = sp.getString("token", "");
         if (token.equals("")) {
             Intent i = new Intent(this, LoginActivity.class);
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, NewsFragment.newInstance(2, "Bearer " + token));
+            transaction.addToBackStack(null);
             transaction.commit();
         }
     }
@@ -97,7 +100,11 @@ public class MainActivity extends AppCompatActivity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                this.finish();
+            } else {
+                getSupportFragmentManager().popBackStack();
+            }
         }
     }
 
@@ -105,6 +112,54 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem searchItem = menu.findItem(R.id.search);
+
+        searchView = (SearchView) searchItem.getActionView();
+        MenuItem.OnActionExpandListener expandListener = new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when action item collapses
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.replace(R.id.fragment_container,fragment);
+//                transaction.addToBackStack(null);
+//                transaction.commit();
+                if (getSupportFragmentManager().getBackStackEntryCount() > 1)
+                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount() - 1; i++) {
+                        getSupportFragmentManager().popBackStack();
+                    }
+
+                filter_fragment = null;
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                filter_fragment = FilteredNewsFragment.newInstance(2, "Bearer " + token, "");
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, filter_fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                return true;  // Return true to expand action view
+            }
+        };
+        searchItem.setOnActionExpandListener(expandListener);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                String text = "%" + newText + "%";
+                if (filter_fragment != null) {
+                    filter_fragment.updateFilter(text);
+                }
+                return false;
+            }
+        });
+
         return true;
     }
 
@@ -116,16 +171,16 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.search) {
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    //Function to add any menu option and submenu entries on a expandable list
-    private void configMenuData() {
-        getTitles();
+    private void setupDrawerMenuList() {
+        setMenuTitles();
         MenuModel menuModel = new MenuModel(newsTitle, false, true); 
         headerList.add(menuModel);
         if (!menuModel.hasChildren) {
@@ -167,8 +222,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //Setting adapter for the expandable list and making the visuals appear, + adding what would happen when selected
-    private void fillExplandableList() {
+
+    private void setDrawerMenuListeners() {
 
         drawerListAdapter = new DrawerListAdapter(this, headerList, childList);
         expandableListView.setAdapter(drawerListAdapter);
@@ -177,7 +232,8 @@ public class MainActivity extends AppCompatActivity {
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                getTitles();
+                setMenuTitles();
+                Fragment fragment;
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 if (headerList.get(groupPosition).isGroup) {
                     if (!headerList.get(groupPosition).hasChildren) {
@@ -215,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-
+                Fragment fragment;
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 if (childList.get(headerList.get(groupPosition)) != null) {
                     MenuModel model = childList.get(headerList.get(groupPosition)).get(childPosition);
@@ -225,7 +281,6 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
                             fm.popBackStack();
                         }
-                        fragment = new Fragment();
                         fragment = new CategoryFragment().newInstance("Bearer " + token, category);
                         transaction.addToBackStack(null);
                         transaction.replace(R.id.fragment_container, fragment).commit();
@@ -249,8 +304,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //Setting menu option titles
-    public void getTitles() {
+    public void setMenuTitles() {
         newsTitle = getResources().getString(R.string.news);
         gamesTitle = getResources().getString(R.string.games);
         settingsTitle = getResources().getString(R.string.settings);

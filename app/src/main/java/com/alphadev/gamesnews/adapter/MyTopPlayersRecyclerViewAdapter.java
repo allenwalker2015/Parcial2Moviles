@@ -99,4 +99,5 @@ public class MyTopPlayersRecyclerViewAdapter extends RecyclerView.Adapter<MyTopP
         }
     }
 
+
 }

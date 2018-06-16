@@ -1,7 +1,6 @@
 package com.alphadev.gamesnews.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,9 +28,9 @@ public class MyImagesRecyclerViewAdapter extends RecyclerView.Adapter<MyImagesRe
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_images, parent, false);
-        GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) view.getLayoutParams();
-        lp.height = parent.getMeasuredHeight() / 4;
-        view.setLayoutParams(lp);
+//        GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) view.getLayoutParams();
+//        lp.height = parent.getMeasuredHeight() / 4;
+//        view.setLayoutParams(lp);
         return new ViewHolder(view);
     }
 
