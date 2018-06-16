@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
                 this.finish();
             } else {
                 getSupportFragmentManager().popBackStack();
@@ -123,10 +123,10 @@ public class MainActivity extends AppCompatActivity {
 //                transaction.replace(R.id.fragment_container,fragment);
 //                transaction.addToBackStack(null);
 //                transaction.commit();
-                if (getSupportFragmentManager().getBackStackEntryCount() > 1)
-                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount() - 1; i++) {
+//                if (getSupportFragmentManager().getBackStackEntryCount() > 1)
+//                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount() - 1; i++) {
                         getSupportFragmentManager().popBackStack();
-                    }
+//                    }
 
                 filter_fragment = null;
                 return true;  // Return true to collapse action view
@@ -224,8 +224,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setDrawerMenuListeners() {
-
-        drawerListAdapter = new DrawerListAdapter(this, headerList, childList);
+        if (drawerListAdapter == null) {
+            drawerListAdapter = new DrawerListAdapter(this, headerList, childList);
+        } else {
+            drawerListAdapter.setListDataChild(childList);
+            drawerListAdapter.setListDataHeader(headerList);
+            drawerListAdapter.notifyDataSetChanged();
+        }
         expandableListView.setAdapter(drawerListAdapter);
 
         //Click listener for parent option

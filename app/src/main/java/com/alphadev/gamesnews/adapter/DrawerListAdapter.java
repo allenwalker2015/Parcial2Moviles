@@ -109,4 +109,12 @@ public class DrawerListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
+    public void setListDataHeader(List<MenuModel> listDataHeader) {
+        this.listDataHeader = listDataHeader;
+    }
+
+    public void setListDataChild(HashMap<MenuModel, List<MenuModel>> listDataChild) {
+        this.listDataChild = listDataChild;
+    }
 }
