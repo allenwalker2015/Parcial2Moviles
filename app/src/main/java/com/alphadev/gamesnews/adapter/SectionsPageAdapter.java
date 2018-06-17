@@ -42,7 +42,13 @@ public class SectionsPageAdapter extends FragmentPagerAdapter {
                 }
 
             case 2:
-                return Game_ImagesFragment.newInstance(3, token, category);
+                boolean tabletSize2 = mContext.getResources().getBoolean(R.bool.isTablet);
+                if (tabletSize2) {
+                    return Game_ImagesFragment.newInstance(5, token, category);
+                } else {
+                    return Game_ImagesFragment.newInstance(3, token, category);
+                }
+
             default:
                 return null;
         }
