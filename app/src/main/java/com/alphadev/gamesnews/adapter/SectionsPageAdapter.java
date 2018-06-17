@@ -34,7 +34,13 @@ public class SectionsPageAdapter extends FragmentPagerAdapter {
             case 0:
                 return Game_GeneralFragment.newInstance(2, token, category);
             case 1:
-                return Game_TopPlayersFragment.newInstance(1, token, category);
+                boolean tabletSize = mContext.getResources().getBoolean(R.bool.isTablet);
+                if (tabletSize) {
+                    return Game_TopPlayersFragment.newInstance(2, token, category);
+                } else {
+                    return Game_TopPlayersFragment.newInstance(1, token, category);
+                }
+
             case 2:
                 return Game_ImagesFragment.newInstance(3, token, category);
             default:
